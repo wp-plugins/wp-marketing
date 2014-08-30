@@ -1,5 +1,5 @@
 === WP Marketing ===
-Version: 1.0.0
+Version: 1.0.1
 URI: http://wpmarketing.guru
 Contributors: dallas22ca
 Author: Dallas Read
@@ -16,18 +16,8 @@ WP Marketing is a suite of high-converting tools that help you to engage your vi
 == Description ==
 
 **What can you do with WP Marketing?**
+
 WP Marketing CTAs are useful to: collect contact information, offer a free download, opt-in to your newsletter, collect call-back phone numbers, boost social sharing, and more.
-		
-> **Live Demos**
-
-> * [WP Marketing](http://wpmarketing.guru)
-> * Let us know where you're using WP Marketing and we'll add it here!
-
-Here's a quick how-to video:
-
-<iframe width="480" height="360" src="//www.youtube.com/embed/DF7mmEtl2mQ" frameborder="0" allowfullscreen></iframe>
-
-**How to unlock WP Marketing**
 
 Is there a marketer in the world who wouldn't want beautiful, high-converting lead-generators at their fingertips?
 
@@ -35,13 +25,20 @@ A *GREAT* marketing tool can have 100x more ROI than a *GOOD* marketing tool. If
 
 If you only have 1 Call-To-Action, WP Marketing is FREE to use - forever!
 
+Here's a quick what-can-it-do-and-how-to-do-it video:
+
+[youtube http://www.youtube.com/watch?v=DF7mmEtl2mQ]
+		
+> **Live Demos**
+
+> * [WP Marketing](http://wpmarketing.guru)
+> * Let us know where you're using WP Marketing and we'll add it here!
+
 Of course, the real power of Call-To-Actions happens when you put MULTIPLE CTAs to work for you.
 
 **Right now, we're offering [UNLIMITED CTAs for only $99 USD](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=NX9NZCDNRD3CC) (1 site).**
 
 For more details and to purchase an Unlock Code, visit [http://wpmarketing.guru/pricing](http://wpmarketing.guru/pricing).
-
-* Screenshots
 
 == Installation ==
 
@@ -83,10 +80,16 @@ Here are the next things on the list for WP Marketing:
 
 == Upgrade Notice ==
 
+= 1.0.1 =
+Updated Readme with Demo video.
+
 = 1.0.0 =
 Initial public release!
 
 == Changelog ==
+
+= 1.0.1 =
+Updated Readme with Demo video.
 
 = 1.0.0 =
 * Initial public release!

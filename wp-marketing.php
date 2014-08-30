@@ -4,7 +4,7 @@
 Plugin Name: WP Marketing
 Plugin URI: http://WPMarketing.guru
 Description: WP Marketing is a suite of high-converting tools that help you to engage your visitors, personalize customer connections, and boost your profits.
-Version: 1.0.0
+Version: 1.0.1
 Contributors: dallas22ca
 Author: Dallas Read
 Author URI: http://www.DallasRead.com
@@ -44,7 +44,7 @@ error_reporting(-1);
 
 class WPMarketing {
   public static $wpmarketing_instance;
-	const version = "1.0.0";
+	const version = "1.0.1";
 	const db = 1.0;
 	const debug = false;
 
