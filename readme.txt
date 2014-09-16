@@ -1,5 +1,5 @@
 === WP Marketing ===
-Version: 1.0.1
+Version: 1.0.2
 URI: http://wpmarketing.guru
 Contributors: dallas22ca
 Author: Dallas Read
@@ -23,16 +23,16 @@ Is there a marketer in the world who wouldn't want beautiful, high-converting le
 
 A *GREAT* marketing tool can have 100x more ROI than a *GOOD* marketing tool. If you're like us, you're always on the lookout for small investments that grow your business and your bottom line - *quickly*.
 
-If you only have 1 Call-To-Action, WP Marketing is FREE to use - forever!
-
 Here's a quick what-can-it-do-and-how-to-do-it video:
 
 [youtube http://www.youtube.com/watch?v=DF7mmEtl2mQ]
 		
 > **Live Demos**
 
-> * [WP Marketing](http://wpmarketing.guru)
+> * [Wordpress Marketing](http://wpmarketing.guru)
 > * Let us know where you're using WP Marketing and we'll add it here!
+
+If you only have 1 Call-To-Action, WP Marketing is FREE to use - forever!
 
 Of course, the real power of Call-To-Actions happens when you put MULTIPLE CTAs to work for you.
 
@@ -49,8 +49,20 @@ For more details and to purchase an Unlock Code, visit [http://wpmarketing.guru/
 
 == Frequently Asked Questions ==
 
-= Is it awesome? =
-* Yes.
+= What is WP Marketing? =
+* You know those boxes on website that tempt you with a free download, contact info, or to subscribe to your newsletter? That's WP Marketing. We offer many different styles (with custom colouring), many different placements, and many different actions (eg. free download, contact form, newsletter subscription, call back, etc.).
+
+= Do you integrate with Mailchimp, Aweber, and other third parties? =
+* Currently, we can sync submitted information with Aweber and Mailchimp, and we're working on more integrations. Let us know if you're looking for a particular service (dallas@wpmarketing.guru)!
+
+= What am I missing out on by not unlocking WP Marketing? =
+* WPMarketing, as a basic plugin, will always be free. The Free version of WPMarketing has a 1-CTA Limit; the Unlocked version allows unlimited Call-To-Actions. Free WPMarketing has limited access to our Call-To-Actions. The Unlocked version includes Social Shares, Call Me Back, Poll, and Comment Stream - to name a few.
+
+= How often do you add new CTAs, features, or updated the plugin? =
+* Our feature releases aren't on a rigid schedule - we want to make sure they're incredibly useful, easy-to-use, and bug-free. Typically, they'll range from once a week to once a month.
+
+= How can I create a sidebar widget to collect email addresses? =
+* Create a new CTA, that has a style of "Inline". Then, visit the Appearance > Widgets page and drag the WP Marketing widget to your sidebar. Select the CTA from the drop down menu and click save! If its not showing up, make sure that your CTA is set to show on page load.
 
 == Screenshots ==
 
@@ -80,16 +92,30 @@ Here are the next things on the list for WP Marketing:
 
 == Upgrade Notice ==
 
+= 1.0.2 =
+* Added notification emails.
+* Added Zendesk integration.
+* Updated icon & compatibility with WordPress 4.0.
+
 = 1.0.1 =
-Updated Readme with Demo video.
+* Updated Readme with Demo video.
 
 = 1.0.0 =
-Initial public release!
+* Initial public release!
 
 == Changelog ==
 
+= 1.1.0 =
+* Added Duplicate button for CTAs.
+* New Widget added.
+* Monthly plan added.
+* FAQ for Readme.
+
+= 1.0.2 =
+* Updated icon & compatibility with WordPress 4.0.
+
 = 1.0.1 =
-Updated Readme with Demo video.
+* Updated Readme with Demo video.
 
 = 1.0.0 =
 * Initial public release!

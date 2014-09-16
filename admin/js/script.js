@@ -135,12 +135,13 @@
         tab: "settings",
         title: $(".wpmarketing").hasClass("locked") && Object.keys(WPMW.ctas).length < 1 ? "Create New CTA" : "Congratulations &mdash; you hit the limit!",
         preload: function(page) {
-          var cta, field, _base, _base1, _i, _len, _ref;
+          var cta, email, field, _base, _base1, _i, _j, _len, _len1, _ref, _ref1;
           WPMW.fetchMailChimpLists();
           cta = WPMW.ctas[page.id];
           cta || (cta = {});
           cta.page || (cta.page = {});
           cta.cache_key = WPMW.randomToken();
+          cta.emails || (cta.emails = []);
           if (cta.action === "button") {
             cta.fields || (cta.fields = []);
           } else {
@@ -158,14 +159,28 @@
               }
             ]);
           }
+          if (cta.fields.length) {
+            _ref = cta.fields;
+            for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+              field = _ref[_i];
+              field.html = WPMW.addField("return", field);
+            }
+          }
+          if (cta.emails.length) {
+            _ref1 = cta.emails;
+            for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+              email = _ref1[_j];
+              email.html = WPMW.addEmail("return", email);
+            }
+          }
           if (page.id === "new") {
             cta.overlay || (cta.overlay = {});
             cta.closable || (cta.closable = "1");
             (_base = cta.overlay).escapable || (_base.escapable = "1");
             (_base1 = cta.overlay).clickable || (_base1.clickable = "1");
+            cta.title || (cta.title = "Sign up for our Newsletter");
+            cta.description || (cta.description = "It's as easy as 1, 2, 3!");
           }
-          cta.title || (cta.title = "Sign up for our Newsletter");
-          cta.description || (cta.description = "It's as easy as 1, 2, 3!");
           cta.button || (cta.button = "Sign Me Up &nbsp;&rarr;");
           cta.text_response || (cta.text_response = "Thank you for your response.");
           cta.appearance || (cta.appearance = {
@@ -194,12 +209,8 @@
             }
           ]);
           cta.sync || (cta.sync = {});
-          cta.sync.mailchimp = WPMW.settings.sync.mailchimp;
-          _ref = cta.fields;
-          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-            field = _ref[_i];
-            field.html = WPMW.addField("return", field);
-          }
+          cta.sync.mailchimp = $.extend(cta.sync.mailchimp, WPMW.settings.sync.mailchimp);
+          cta.sync.zendesk = $.extend(cta.sync.zendesk, WPMW.settings.sync.zendesk);
           cta.settings = WPMW.settings;
           cta.ctas_length = Object.keys(WPMW.ctas).length;
           return cta;
@@ -457,6 +468,22 @@
         return $(field(data)).appendTo("#cta_form .fields");
       }
     };
+    WPMW.addEmail = function(output, data) {
+      var email, email_template;
+      if (output == null) {
+        output = "append";
+      }
+      if (data == null) {
+        data = {};
+      }
+      email_template = $("#wpmarketing_email").html();
+      email = Handlebars.compile(email_template);
+      if (output === "return") {
+        return email(data);
+      } else {
+        return $(email(data)).appendTo(".action_emails");
+      }
+    };
     WPMW.setName = function() {
       var action, name, style;
       name = $("#cta_form input[name='name'][type='hidden']");
@@ -538,6 +565,32 @@
       WPMW.addField("append");
       return false;
     });
+    $(document).on("click", ".add_email", function() {
+      var data;
+      if ($(".action_email").length) {
+        data = {
+          to: "" + WPMW.settings.subscriber_name + " <" + WPMW.settings.subscriber_email + ">",
+          from: "" + WPMW.settings.website + " <no-reply@" + WPMW.settings.website + ">",
+          subject: "" + WPMW.settings.website + " Lead",
+          message: "Hi " + WPMW.settings.subscriber_name + ",\n\n{{ name }} ({{ email }}) has submitted a form:\n\n{{{ data }}}\n\nThanks,\n\n" + WPMW.settings.website
+        };
+      } else {
+        data = {
+          to: "{{ name }} <{{ email }}>",
+          from: "" + WPMW.settings.website + " <no-reply@" + WPMW.settings.website + ">",
+          subject: "{{ name }}, thanks for contacting us!",
+          message: "Hi {{ name }},\n\nWe'll be in touch as soon as we can!\n\nThanks,\n\n" + WPMW.settings.website
+        };
+      }
+      WPMW.addEmail("append", data);
+      return false;
+    });
+    $(document).on("click", ".delete_email", function() {
+      if (confirm("Are you sure you want to delete this field?")) {
+        $(this).closest(".action_email").remove();
+      }
+      return false;
+    });
     $(document).on("click", ".delete_field", function() {
       if (confirm("Are you sure you want to delete this field?")) {
         $(this).closest("tr").remove();
@@ -585,6 +638,26 @@
       $(this).addClass("selected");
       $("." + tabber + "_tab:not(." + tabber + "_tab_" + tab + ")").hide();
       $("." + tabber + "_tab." + tabber + "_tab_" + tab).show();
+      return false;
+    });
+    $(document).on("click", ".duplicate_cta", function() {
+      var form;
+      form = $(this).closest("form");
+      form.addClass("is_loading");
+      $.post(ajaxurl, {
+        action: "cta_duplicate",
+        id: $(this).attr("data-id")
+      }, function(response) {
+        var json;
+        json = JSON.parse(response);
+        if (json.success) {
+          WPMW.ctaUpdate.push(json);
+          return window.location.hash = "#!/ctas/" + json.id;
+        } else {
+          form.removeClass("is_loading");
+          return alert("We couldn't duplicate this CTA.");
+        }
+      });
       return false;
     });
     return $(document).on("submit", ".wpmarketing_form", function() {

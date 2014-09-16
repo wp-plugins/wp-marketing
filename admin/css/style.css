@@ -227,7 +227,26 @@
   max-width: 100%; }
 .wpmarketing .full_width {
   width: 100%; }
+.wpmarketing .action_email {
+  padding: 15px;
+  margin: 0 0 30px;
+  background: #eee;
+  border: 1px solid #ccc; }
+  .wpmarketing .action_email table {
+    width: 100%; }
+    .wpmarketing .action_email table td {
+      padding: 5px; }
+    .wpmarketing .action_email table textarea {
+      height: 150px; }
+.wpmarketing .float_right {
+  float: right; }
+.wpmarketing .float_left {
+  float: left; }
 
+.wpmarketing .postbox-container {
+  width: 100%; }
+  .wpmarketing .postbox-container .postbox {
+    width: 100%; }
 .wpmarketing .main {
   width: 75%;
   float: left;

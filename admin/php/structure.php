@@ -161,7 +161,7 @@
 								{{/each}}
 							</tbody>
 						</table>
-						
+					
 						<a href="#" class="button add_field">Add Field</a>
 					</div>
 
@@ -248,6 +248,13 @@
 						</div>
 					
 					</div>
+					
+					<div class="wpmarketing_clear"></div>
+					
+					<div class="field">
+						<label for="button_class">What class should the button have (use a space to separate multiple classes)?</label>
+						<input type="text" name="button_class" id="button_class" class="full_width" value="{{ button_class }}">
+					</div>
 				</div>
 				
 				<div class="cta_tab cta_tab_integrations">
@@ -257,6 +264,7 @@
 						
 						<div class="nav-tab-wrapper integrations_tabs">
 							<a href="mailchimp"	class="nav-tab integrations_show_tab selected">Mailchimp</a>
+							<a href="zendesk"		class="nav-tab integrations_show_tab">Zendesk</a>
 							<a href="aweber"		class="nav-tab integrations_show_tab">Aweber</a>
 							<div class="wpmarketing_clear"></div>
 						</div>
@@ -284,6 +292,17 @@
 							{{/if}}
 						</div>
 						
+						<div class="zendesk integrations_tab integrations_tab_zendesk">
+							{{#if sync.zendesk.api_key}}
+								<div class="field">
+									<input type="checkbox" name="sync[zendesk][sync]" id="sync_zendesk_sync" value="1" {{#is sync.zendesk.sync "1"}}checked="checked"{{/is}}>
+									<label for="sync_zendesk_sync" class="inline_block">Send responses to Zendesk</label>
+								</div>
+							{{else}}
+								<p>Your Zendesk Account is not setup. Visit the <a href="#!/settings">Settings</a> page to add your API Key.</p>
+							{{/if}}
+						</div>
+						
 						<div class="aweber integrations_tab integrations_tab_aweber">
 							<div class="inner_contents">
 								<div class="field">
@@ -296,20 +315,26 @@
 				</div>
 				
 				<div class="cta_tab cta_tab_actions">
-					<div class="field">
-						<label for="text_response">What is the thank you message for submitting the form?</label>
-						<textarea name="text_response" id="text_response" style="height: 5em; ">{{ text_response }}</textarea>
+					<div class="field half_field">
+						<label for="text_response">What is the on-page thank you message?</label>
+						<textarea name="text_response" id="text_response" style="height: 5em; width: 90%; ">{{ text_response }}</textarea>
 					</div>
 					
-					<div class="field">
-						<label for="redirect" data-field="redirect">What URL should the visitor be redirected to (leave empty if none)?</label>
+					<div class="field half_field">
+						<label for="redirect" data-field="redirect">What URL should the visitor be redirected to (leave blank if none)?</label>
 						<label for="redirect" data-field="download">What is free download URL?</label>
 						<input type="text" name="redirect" id="redirect" class="full_width" value="{{ redirect }}">
 					</div>
 					
-					<!-- <div class="field">
-						<p>AUTORESPONDERS</p>
-					</div> -->
+					<div class="wpmarketing_clear"></div>
+					
+					<div class="action_emails">
+						{{#each emails}}
+							{{{ html }}}
+						{{/each}}
+					</div>
+					
+					<a href="#" class="button add_email">Add Notification Email</a>
 				</div>
 				
 				<div class="cta_tab cta_tab_visibility">					
@@ -369,36 +394,38 @@
 								<option value="load"		{{#is event "load"}}selected="selected"{{/is}}		>On page load</option>
 								<option value="leave"		{{#is event "leave"}}selected="selected"{{/is}}		>Predicted page leave</option>
 								<option value="scroll"	{{#is event "scroll"}}selected="selected"{{/is}}	>On scroll</option>
-								<option value="manual"	{{#is event "manual"}}selected="selected"{{/is}}	>None (show manually)</option>
+								<option value="manual"	{{#is event "manual"}}selected="selected"{{/is}}	>None (show manually or with widgets)</option>
 							</select>
 							<p class="hint" data-trigger-event="manual" {{#isnt event "manual"}}style="display: none; "{{/isnt}}>
 								CTA.push(["show", "<span data-cache-key>{{ ../cache_key }}</span>"]);
 							</p>
 						</div>
-					
+				
 						<div class="field half_field" data-not-trigger-event="manual" {{#is event "manual"}}style="display: none; "{{/is}}>
 							<label for="trigger_expire">When should this CTA be shown to a visitor?</label>
 							<select id="trigger_expire" name="triggers[][expire]" class="change_expire">
-								<option value="0"			{{#is expire "0"}}selected="selected"{{/is}}			>Every time (until they interact)</option>
+								<option value="-1"		{{#is expire "-1"}}selected="selected"{{/is}}		>Every time</option>
+								<option value="0"			{{#is expire "0"}}selected="selected"{{/is}}		>Every time until they interact</option>
 								<option value="9999"	{{#is expire "9999"}}selected="selected"{{/is}}	>Once</option>
-								<option value="1"			{{#is expire "1"}}selected="selected"{{/is}}			>Once a day</option>
-								<option value="7"			{{#is expire "7"}}selected="selected"{{/is}}			>Once a week</option>
+								<option value="1"			{{#is expire "1"}}selected="selected"{{/is}}		>Once a day</option>
+								<option value="7"			{{#is expire "7"}}selected="selected"{{/is}}		>Once a week</option>
 								<option value="30"		{{#is expire "30"}}selected="selected"{{/is}}		>Once a month</option>
 							</select>
 						</div>
-						
+					
 						<div class="wpmarketing_clear"></div>
-						
+					
 						<div class="field half_field" data-trigger-event="load" style="{{#isnt event "load"}}display: none;{{/isnt}}">
 							<label for="trigger_delay">How many seconds to delay before showing?</label>
 							<input type="text" id="trigger_delay" name="triggers[][delay]" value="{{ delay }}">
 						</div>
-						
+					
 						<div class="field half_field" data-trigger-event="scroll" style="{{#isnt event "scroll"}}display: none;{{/isnt}}">
 							<label for="trigger_scroll">How much should be scrolled before showing (eg. 500px or 50%)?</label>
 							<input type="text" id="trigger_scroll" name="triggers[][scroll]" value="{{ scroll }}">
 						</div>
 					{{/each}}
+				
 				</div>
 		
 				<div class="wpmarketing_clear"></div>
@@ -406,6 +433,7 @@
 				<div class="actions_field">
 					{{#if id}}
 						<input type="submit" name="commit" class="button button-primary" value="Save Changes">
+						<a href="#" class="button duplicate_cta" data-id="{{ id }}">Duplicate</a>
 						<a href="#" class="button delete_cta" data-id="{{ id }}">Delete</a>
 					{{else}}
 						<input type="submit" name="commit" class="button button-primary" value="Save &amp; Publish">
@@ -536,6 +564,29 @@
 		</table>
 	</div>
 </script>
+<script id="wpmarketing_email" type="text/x-handlebars-template">
+	<div class="action_email">
+		<table>
+			<tr>
+				<td style="width: 20%; text-align: right; "><label>To:</label></td>
+				<td><input type="text" class="full_width" name="emails[][to]" value="{{ to }}"></td>
+			</tr>
+			<tr>
+				<td style="width: 20%; text-align: right; "><label>From:</label></td>
+				<td><input type="text" class="full_width" name="emails[][from]" value="{{ from }}"></td>
+			</tr>
+			<tr>
+				<td style="width: 20%; text-align: right; "><label>Subject:</label></td>
+				<td><input type="text" class="full_width" name="emails[][subject]" value="{{ subject }}"></td>
+			</tr>
+			<tr>
+				<td colspan="2"><textarea class="full_width" name="emails[][message]">{{ message }}</textarea></td>
+			</tr>
+		</table>
+		<a href="#" class="delete_email float_right">Delete</a>
+		<div class="wpmarketing_clear"></div>
+	</div>
+</script>
 <?php if (isset($_REQUEST["nowp"])) { ?>
 	<script type="text/javascript">
 		jQuery(function($) {
@@ -569,7 +620,22 @@
 				
 				<div class="field">
 					<label for="mailchimp_api_key">What is your Mailchimp API Key?</p>
-					<input type="text" name="sync[mailchimp][api_key]" id="mailchimp_api_key" value="{{ sync.mailchimp.api_key }}">
+					<input type="text" class="full_width" name="sync[mailchimp][api_key]" id="mailchimp_api_key" value="{{ sync.mailchimp.api_key }}">
+				</div>
+				
+				<div class="field">
+					<label for="zendesk_api_key">What is your Zendesk API Key?</p>
+					<input type="text" class="full_width" name="sync[zendesk][api_key]" id="zendesk_api_key" value="{{ sync.zendesk.api_key }}">
+				</div>
+				
+				<div class="field">
+					<label for="zendesk_subdomain">What is your Zendesk subdomain?</p>
+					<input type="text" class="full_width" name="sync[zendesk][subdomain]" id="zendesk_subdomain" value="{{ sync.zendesk.subdomain }}">
+				</div>
+				
+				<div class="field">
+					<label for="zendesk_email">What is your Zendesk email address?</p>
+					<input type="text" class="full_width" name="sync[zendesk][email]" id="zendesk_email" value="{{ sync.zendesk.email }}">
 				</div>
 				
 				<div class="wpmarketing_clear"></div>
@@ -676,6 +742,7 @@
 			</table>
 			
 			<p style="margin-top: -20px; text-align: right; ">
+				Rather pay monthly? <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=W8RW46U72EAXU">We have a $19 monthly plan.</a><br>
 				Need uber-bulk pricing? <a href="mailto:dallas@wpmarketing.guru">Email us.</a>
 			</p>
 			
@@ -715,7 +782,7 @@
 		<h3>What can you do with WPMarketing?</h3>
 		<p>WPMarketing puts the tools in your hands to become an expert online marketer. With WPMarketing, we make it easy for marketers to add Call-To-Actions on their site <em>without the help of developers</em>.</p>
 		<p>WPMarketing CTAs are useful to: collect contact information, offer a free download, opt-in to your newsletter, collect call-back phone numbers, and boost social sharing.</p>
-		<p>Here's an overview of how to use WPMarketing:</p>
+		<p>Here's an overview of how to use WPMarketing CTAs:</p>
 		<div class="youtube_wrapper">
 			<a href="//www.youtube.com/embed/DF7mmEtl2mQ" target="_blank">
 				<img src="<?php echo plugins_url("wp-marketing/admin/imgs/video.jpg"); ?>">

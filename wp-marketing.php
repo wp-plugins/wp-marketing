@@ -4,7 +4,7 @@
 Plugin Name: WP Marketing
 Plugin URI: http://WPMarketing.guru
 Description: WP Marketing is a suite of high-converting tools that help you to engage your visitors, personalize customer connections, and boost your profits.
-Version: 1.0.1
+Version: 1.0.2
 Contributors: dallas22ca
 Author: Dallas Read
 Author URI: http://www.DallasRead.com
@@ -44,7 +44,7 @@ error_reporting(-1);
 
 class WPMarketing {
   public static $wpmarketing_instance;
-	const version = "1.0.1";
+	const version = "1.0.2";
 	const db = 1.0;
 	const debug = false;
 
@@ -59,6 +59,8 @@ class WPMarketing {
     add_action( "admin_menu", array( $this, "menu_page" ) );
 		add_action( "admin_init", array( $this, "admin_init" ) );
 		add_action( "plugins_loaded", array( $this, "db_check" ) );
+		add_action( "widgets_init", array( $this, "register_cta_widget" ) );
+		
 		add_action( "wp_enqueue_scripts", array( $this, "wp_enqueue_scripts") );
 		add_action( "wp_head", array( $this, "wp_head" ) );
 		
@@ -68,6 +70,7 @@ class WPMarketing {
 		
 		add_action( "wp_ajax_cta_update", array( $this, "cta_update" ) );
 		add_action( "wp_ajax_cta_delete", array( $this, "cta_delete" ) );
+		add_action( "wp_ajax_cta_duplicate", array( $this, "cta_duplicate" ) );
 		
 		add_action( "wp_ajax_ctas_fetch_all", array( $this, "ctas_fetch_all" ) );
 		add_action( "wp_ajax_cta_submit", array( $this, "cta_submit" ) );
@@ -378,7 +381,7 @@ class WPMarketing {
 		$ctas = $wpdb->get_results("SELECT * FROM $ctas_table ORDER BY updated_at DESC", ARRAY_A);
 		
 		foreach ($ctas as $key => $cta) {
-			$ctas[$key]["data"] = stripslashes_deep(json_decode(stripslashes_deep($cta["data"]))->data);
+			$ctas[$key]["data"] = stripslashes_deep(json_decode(stripslashes_deep($cta["data"]), true)["data"]);
 			$ctas[$key]["name"] = stripslashes($ctas[$key]["name"]);
 		}
 		
@@ -394,6 +397,22 @@ class WPMarketing {
 		$data["success"] = $response != 0;
 		
 		die(json_encode($data));
+	}
+	
+	public static function cta_duplicate() {
+		global $wpdb;
+		$ctas_table = $wpdb->prefix . "wpmarketing_ctas";
+		$cta = $wpdb->get_row("SELECT * FROM $ctas_table WHERE id = $_POST[id]", ARRAY_A);
+		unset($cta["id"]);
+		
+		$cta["name"] = stripslashes($cta["name"]) . " - Duplicate";
+		$response = $wpdb->insert( $ctas_table, $cta );
+		
+		$cta["data"] = stripslashes_deep(json_decode(stripslashes_deep($cta["data"]))->data);
+		$cta["id"] = $wpdb->insert_id;
+		$cta["success"] = $response != 0;
+		
+		die(json_encode($cta));
 	}
 	
 	public static function cta_submit() {
@@ -469,8 +488,21 @@ class WPMarketing {
 				
 				if (isset($email)) { //&& $wpmarketing["status"] == "unlocked"
 					$submit["sync"] = array();
+					$has_mailchimp = isset($submit["cta"]["data"]["sync"]["mailchimp"]["list_id"]);
+					$has_zendesk = isset($submit["cta"]["data"]["sync"]["zendesk"]["sync"]);
+					$has_aweber = isset($submit["cta"]["data"]["sync"]["aweber"]["list_id"]);
+					$has_emails = isset($submit["cta"]["data"]["emails"]);
 					
-					if (isset($submit["cta"]["data"]["sync"]["mailchimp"]["list_id"])) {
+					if ($has_emails) {
+						require "admin/php/vendor/Mustache/Autoloader.php";
+						Mustache_Autoloader::register();
+						
+						foreach ($submit["cta"]["data"]["emails"] as $email) {
+							WPMarketing::submit_notify($email, $visitor["data"]);
+						}
+					}
+					
+					if ($has_mailchimp) {
 						$mailchimp_list_id = $submit["cta"]["data"]["sync"]["mailchimp"]["list_id"];
 						
 						if ($mailchimp_list_id != "") {
@@ -478,7 +510,11 @@ class WPMarketing {
 						}
 					}
 					
-					if (isset($submit["cta"]["data"]["sync"]["aweber"]["list_id"])) {
+					if ($has_zendesk) {
+						$submit["sync"]["zendesk"] = WPMarketing::zendesk_subscribe($visitor["data"]);
+					}
+					
+					if ($has_aweber) {
 						$aweber_list_id = $submit["cta"]["data"]["sync"]["aweber"]["list_id"];
 						
 						if ($aweber_list_id != "") {
@@ -493,6 +529,37 @@ class WPMarketing {
 		if (!$submit["success"]) { $submit["error"] = $wpdb->last_error; }
 		
 		die(json_encode($submit));
+	}
+	
+	public static function submit_notify($email, $visitor) {
+		$visitor["data"] = "<table>";
+		foreach ($_POST["data"] as $field => $value)
+		{
+      if ($field != "action")
+      {
+        $value = filter_var($value, FILTER_SANITIZE_STRING);
+  			$visitor["data"] .= "
+          <tr>
+            <td style=\"text-align:right; \">
+              <strong>$field:</strong>
+            </td>
+            <td>$value</td>
+          </tr>";
+      }
+		}
+		$visitor["data"] .= "</table>";
+			
+		$m = new Mustache_Engine;
+		$to = $m->render($email["to"], $visitor);
+		$from = $m->render($email["from"], $visitor);
+		$subject = $m->render($email["subject"], $visitor);
+		$message = $m->render(nl2br($email["message"]), $visitor);
+		
+		$headers = "MIME-Version: 1.0" . "\r\n";
+		$headers .= "Content-type: text/html; charset=iso-8859-1" . "\r\n";
+		$headers .= "From: $from" . "\r\n";
+
+		wp_mail($to, $subject, $message, $headers);
 	}
 	
 	public static function cta_fetch_responses() {
@@ -555,8 +622,8 @@ class WPMarketing {
 		
 		if (isset($visitor["name"])) { $data["body"]["name"] = $visitor["name"]; }
 		if (isset($visitor["email"])) { $data["body"]["email"] = $visitor["email"]; }
-		if (isset($visitor["first_name"])) { $data["body"]["custom first_name"] = $visitor["first_name"]; }
-		if (isset($visitor["last_name"])) { $data["body"]["custom last_name"] = $visitor["last_name"]; }
+		if (isset($visitor["first_name"])) { $data["body"]["first_name"] = $visitor["first_name"]; }
+		if (isset($visitor["last_name"])) { $data["body"]["last_name"] = $visitor["last_name"]; }
 		if (!isset($data["body"]["name"]) && isset($visitor["first_name"])) {
 			$data["body"]["name"] = $visitor["first_name"];
 			if (isset($visitor["last_name"])) { $data["body"]["name"] += " $visitor[last_name]"; }
@@ -569,6 +636,59 @@ class WPMarketing {
 		} else {
 			return !is_wp_error($response);
 		}
+	}
+	
+	public static function zendesk_subscribe($visitor) {
+		global $wpmarketing;
+		$wpmarketing = WPMarketing::settings();
+		
+		if (isset($wpmarketing["sync"]["zendesk"]["api_key"]) && isset($wpmarketing["sync"]["zendesk"]["subdomain"])) {
+			$subdomain = $wpmarketing["sync"]["zendesk"]["subdomain"];
+			$zendesk_email = $wpmarketing["sync"]["zendesk"]["email"];
+			$api_key = $wpmarketing["sync"]["zendesk"]["api_key"];
+			$api = "https://$subdomain.zendesk.com/api/v2/";
+			$full_path = "tickets.json";
+			$url = "$api/$full_path";
+
+			
+			$body = array(
+				"ticket" => array(
+					"comment" => array(),
+					"requester" => array(
+						"name" => $visitor["name"],
+						"email" => $visitor["email"]
+					)
+				)
+			);
+			
+			if (isset($visitor["subject"])) {
+				$body["ticket"]["subject"] = $visitor["subject"];
+			} else {
+				$body["ticket"]["subject"] = "Website Request";
+			}
+			
+			if (isset($visitor["body"])) {
+				$body["ticket"]["comment"]["body"] = stripslashes($visitor["body"]);
+			}
+			
+			$data = array(
+				"user-agent" => "WPMarketing Plugin",
+				"timeout" => 10,
+				"sslverify" => false,
+				"headers" => array(
+					"Content-Type" => "application/json",
+					"Accept" => "application/json",
+					"Authorization" => 'Basic ' . base64_encode( $zendesk_email . "/token:" . $api_key )
+				),
+				"body" => json_encode($body)
+			);
+	
+			$response = wp_remote_post($url, $data);
+		} else {
+			$response = array( "response" => array( "code" => 0 ));
+		}
+		
+		return $response;
 	}
 	
 	public static function mailchimp_subscribe($visitor, $list_id) {
@@ -623,23 +743,29 @@ class WPMarketing {
 		
 		if (isset($wpmarketing["sync"]["mailchimp"]["api_key"]) && $wpmarketing["sync"]["mailchimp"]["api_key"] != "") {
 			$api_key = $wpmarketing["sync"]["mailchimp"]["api_key"];
-			$data_center = explode("-", $api_key)[1];
-			$api = "https://$data_center.api.mailchimp.com/2.0";
-			$full_path = "$path.json";
-			$url = "$api/$full_path";
-			$post["apikey"] = $api_key;
+			$key_exploded = explode("-", $api_key);
+			
+			if (count($key_exploded) > 1) {
+				$data_center = $key_exploded[1];
+				$api = "https://$data_center.api.mailchimp.com/2.0";
+				$full_path = "$path.json";
+				$url = "$api/$full_path";
+				$post["apikey"] = $api_key;
 		
-			$data = array(
-				"user-agent" => "WPMarketing Plugin",
-				"timeout" => 10,
-				"sslverify" => false,
-				"headers" => array(
-					"Content-Type" => "application/json"
-				),
-				"body" => json_encode($post)
-			);
+				$data = array(
+					"user-agent" => "WPMarketing Plugin",
+					"timeout" => 10,
+					"sslverify" => false,
+					"headers" => array(
+						"Content-Type" => "application/json"
+					),
+					"body" => json_encode($post)
+				);
 		
-			$response = wp_remote_post($url, $data);
+				$response = wp_remote_post($url, $data);
+			} else {
+				$response = array( "response" => array( "code" => 0 ));
+			}
 		} else {
 			$response = array( "response" => array( "code" => 0 ));
 		}
@@ -652,6 +778,72 @@ class WPMarketing {
     $data = WPMarketing::settings( $_POST["data"] );
 		$data["success"] = true;
     die(json_encode($data));
+	}
+	
+	public static function register_cta_widget() {
+		register_widget( "WPMWidget" );
+	}
+}
+
+class WPMWidget extends WP_Widget {
+	function WPMWidget() {
+		parent::__construct( "wpm_widget", "WP Marketing", array( "description" => "Add a Call-To-Action." ) );
+	}
+
+	function widget( $args, $instance ) {
+		global $wpdb;
+		$ctas_table = $wpdb->prefix . "wpmarketing_ctas";
+		$cta = $wpdb->get_row("SELECT * FROM $ctas_table WHERE id = $instance[cta_id] LIMIT 1", ARRAY_A);
+		
+		if ($cta != null) {
+			$cta = stripslashes_deep(json_decode(stripslashes_deep($cta["data"]))->data);
+			$cache_key = $cta->cache_key;
+			
+			if ($cta->style == "inline") {
+				echo "<div class=\"wpm_container_$cache_key\"></div>";
+			}
+		}
+	}
+
+	function update( $new_instance, $old_instance ) {
+		$instance = array();
+		$instance["cta_id"] = ( ! empty( $new_instance["cta_id"] ) ) ? (integer) $new_instance["cta_id"] : 0;
+		return $instance;
+	}
+
+	function form( $instance ) {
+		global $wpdb;
+		$cta_options = "";
+		$instance["cta_id"] = isset($instance["cta_id"]) ? $instance["cta_id"] : 0;
+		$ctas_table = $wpdb->prefix . "wpmarketing_ctas";
+		$ctas = $wpdb->get_results("SELECT * FROM $ctas_table ORDER BY updated_at DESC", ARRAY_A);
+		
+		foreach ($ctas as $key => $cta) {
+			$cta["data"] = stripslashes_deep(json_decode(stripslashes_deep($cta["data"]))->data);
+			
+			if ($cta["data"]->style == "inline") {
+				$selected = "";
+				if ((integer) $instance["cta_id"] == (integer) $cta["id"]) { $selected = "selected=\"selected\""; }
+				$cta_options .= "<option value=\"" . $cta["id"] . "\" " . $selected . ">" . $cta["name"] . "</option>";
+			}
+		}
+		
+		echo "<div class=\"widget-content\">";
+		
+		if ($cta_options == "") {
+			echo "<p>No Inline CTAs have been created.</p>";
+		} else {
+			echo "<p><label for=\"" . $this->get_field_name( "cta_id" ) . "\">Which CTA would you like to display (only Inline are permitted)?</label>
+								<select name=\"" . $this->get_field_name( "cta_id" ) . "\">
+									<option disabled=\"disabled\">Select A CTA...</option>
+									$cta_options
+								</select></p>";
+		}
+		
+		echo "<p style=\"font-size: .8em; color: #777; \">
+					CTAs are customized on the <a href=\"admin.php?page=wpmarketing\">WP Marketing page</a>.
+				</p>
+			</div>";
 	}
 }
 
