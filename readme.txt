@@ -1,5 +1,5 @@
 === WP Marketing ===
-Version: 1.0.2
+Version: 1.0.3
 URI: http://wpmarketing.guru
 Contributors: dallas22ca
 Author: Dallas Read
@@ -7,7 +7,7 @@ Author URI: http://www.DallasRead.com
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=NX9NZCDNRD3CC
 Tags: marketing, customer support, customer service, conversions, Call-To-Action, cta, hello bar, mailchimp, aweber, getresponse, subscribe, subscription, newsletter
 Requires at least: 3.6
-Tested up to: 3.9.2
+Tested up to: 4.0
 Stable tag: trunk
 License: MIT
 
@@ -91,6 +91,10 @@ Here are the next things on the list for WP Marketing:
 * Translations / Internationalization
 
 == Upgrade Notice ==
+
+= 1.0.3 =
+- Line breaks fixed for email responses.
+- Admin CSS appears only on WPMarketing pages.
 
 = 1.0.2 =
 * Added notification emails.

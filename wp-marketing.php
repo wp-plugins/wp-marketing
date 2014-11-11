@@ -4,14 +4,14 @@
 Plugin Name: WP Marketing
 Plugin URI: http://WPMarketing.guru
 Description: WP Marketing is a suite of high-converting tools that help you to engage your visitors, personalize customer connections, and boost your profits.
-Version: 1.0.2
+Version: 1.0.3
 Contributors: dallas22ca
 Author: Dallas Read
 Author URI: http://www.DallasRead.com
 Text Domain: wp-marketing
 marketing, customer support, customer service, conversions, Call-To-Action, cta, hello bar, mailchimp, aweber, getresponse, subscribe, subscription, newsletter
 Requires at least: 3.6
-Tested up to: 3.9.2
+Tested up to: 4.0
 Stable tag: trunk
 License: MIT
 
@@ -56,8 +56,8 @@ class WPMarketing {
   private function __construct() {
 		define("WPMARKETING_ROOT", dirname(__FILE__));
 		
-    add_action( "admin_menu", array( $this, "menu_page" ) );
 		add_action( "admin_init", array( $this, "admin_init" ) );
+    add_action( "admin_menu", array( $this, "menu_page" ) );
 		add_action( "plugins_loaded", array( $this, "db_check" ) );
 		add_action( "widgets_init", array( $this, "register_cta_widget" ) );
 		
@@ -85,9 +85,6 @@ class WPMarketing {
   }
 	
 	public static function admin_init() {
-		wp_register_style( "wpmarketing_admin", plugins_url("admin/css/style.min.css", __FILE__) );
-		wp_enqueue_style( array( "wpmarketing_admin", "wp-color-picker" ) );
-
 		if (WPMarketing::debug) {
 			wp_register_script( "wpmarketing_admin", plugins_url("admin/js/script.js", __FILE__) );
 			wp_register_script( "wpmarketing_handlebars", plugins_url("admin/js/vendor/handlebars.js", __FILE__) );
@@ -130,6 +127,9 @@ class WPMarketing {
 		global $wpmarketing;
 		global $just_activated;
 		global $ctas_table;
+		
+		wp_register_style( "wpmarketing_admin", plugins_url("admin/css/style.min.css", __FILE__) );
+		wp_enqueue_style( array( "wpmarketing_admin", "wp-color-picker" ) );
 		
     WPMarketing::parse_params();
     $wpmarketing = WPMarketing::settings();
@@ -535,7 +535,7 @@ class WPMarketing {
 		$visitor["data"] = "<table>";
 		foreach ($_POST["data"] as $field => $value)
 		{
-      if ($field != "action")
+      if ($field != "action" && $field != "Action")
       {
         $value = filter_var($value, FILTER_SANITIZE_STRING);
   			$visitor["data"] .= "
@@ -553,7 +553,7 @@ class WPMarketing {
 		$to = $m->render($email["to"], $visitor);
 		$from = $m->render($email["from"], $visitor);
 		$subject = $m->render($email["subject"], $visitor);
-		$message = $m->render(nl2br($email["message"]), $visitor);
+		$message = $m->render(nl2br(stripslashes($email["message"])), $visitor);
 		
 		$headers = "MIME-Version: 1.0" . "\r\n";
 		$headers .= "Content-type: text/html; charset=iso-8859-1" . "\r\n";
