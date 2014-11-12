@@ -75,10 +75,15 @@ class WPMarketing {
 		add_action( "wp_ajax_ctas_fetch_all", array( $this, "ctas_fetch_all" ) );
 		add_action( "wp_ajax_cta_submit", array( $this, "cta_submit" ) );
 		add_action( "wp_ajax_cta_fetch_responses", array( $this, "cta_fetch_responses" ) );
+		add_action( "wp_ajax_cta_delete_response", array( $this, "cta_delete_response" ) );
+		add_action( "wp_ajax_cta_count_responses", array( $this, "cta_count_responses" ) );
 		
 		add_action( "wp_ajax_nopriv_ctas_fetch_all", array( $this, "ctas_fetch_all" ) );
 		add_action( "wp_ajax_nopriv_cta_submit", array( $this, "cta_submit" ) );
 		add_action( "wp_ajax_nopriv_cta_fetch_responses", array( $this, "cta_fetch_responses" ) );
+		add_action( "wp_ajax_nopriv_cta_count_responses", array( $this, "cta_count_responses" ) );
+		
+		add_shortcode("response_counter", array( $this, "shortcode_response_counter" ) );
 		
 		register_activation_hook( __FILE__, array( $this, "db_check" ) );
     register_uninstall_hook( __FILE__, array( $this, "uninstall" ) );
@@ -783,6 +788,34 @@ class WPMarketing {
 	public static function register_cta_widget() {
 		register_widget( "WPMWidget" );
 	}
+	
+	public static function cta_delete_response() {
+		global $wpdb;
+		$events_table = $wpdb->prefix . "wpmarketing_events";
+		$success = $wpdb->delete($events_table, array(
+			"id" => $_POST["id"]
+		));
+		die(json_encode(array( "success" => $success )));
+	}
+	
+	public static function cta_count_responses() {
+		$count = 0;
+
+		if (isset($_POST["id"])) {
+			global $wpdb;
+			$events_table = $wpdb->prefix . "wpmarketing_events";
+			$wpdb->get_results( $wpdb->prepare("SELECT * FROM $events_table WHERE verb = %s AND cta_id = %d",
+				"submit", $_POST["id"]
+			), ARRAY_A);
+			$count = $wpdb->num_rows;
+		}
+		
+		die(json_encode(array( "count" => $count )));
+	}
+	
+	public static function shortcode_response_counter( $attrs ) {
+		return "<span class=\"cta_counter\" data-id=\"$attrs[id]\">0</span>";
+	}
 }
 
 class WPMWidget extends WP_Widget {
@@ -810,7 +843,7 @@ class WPMWidget extends WP_Widget {
 		$instance["cta_id"] = ( ! empty( $new_instance["cta_id"] ) ) ? (integer) $new_instance["cta_id"] : 0;
 		return $instance;
 	}
-
+	
 	function form( $instance ) {
 		global $wpdb;
 		$cta_options = "";
@@ -849,5 +882,5 @@ class WPMWidget extends WP_Widget {
 
 //delete_option("wpmarketing_settings");
 WPMarketing::init();
-	
+
 ?>

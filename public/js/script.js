@@ -2,6 +2,23 @@
   this.WPMW || (this.WPMW = {});
 
   jQuery(document).ready(function($) {
+    WPMW.updateCounters = function() {
+      return $(".cta_counter").each(function() {
+        var counter, data;
+        counter = $(this);
+        data = {
+          action: "cta_count_responses",
+          id: $(this).attr("data-id")
+        };
+        return $.post(WPMW.ajaxurl, data, function(response) {
+          var json, numAnim;
+          json = JSON.parse(response);
+          counter.attr("id", "cta-counter-" + data.id);
+          numAnim = new countUp("cta-counter-" + data.id, parseInt(counter.text()), json.count, 0, 0.5);
+          return numAnim.start();
+        });
+      });
+    };
     WPMW.findAndPush = function(ids) {
       var data;
       if (ids == null) {
@@ -27,7 +44,8 @@
         return _results;
       });
     };
-    return WPMW.findAndPush();
+    WPMW.findAndPush();
+    return WPMW.updateCounters();
   });
 
 }).call(this);

@@ -1,5 +1,5 @@
 === WP Marketing ===
-Version: 1.0.3
+Version: 1.0.4
 URI: http://wpmarketing.guru
 Contributors: dallas22ca
 Author: Dallas Read
@@ -91,6 +91,10 @@ Here are the next things on the list for WP Marketing:
 * Translations / Internationalization
 
 == Upgrade Notice ==
+
+= 1.0.4 =
+- Added countUp responses counter shortcode.
+- Delete responses button.
 
 = 1.0.3 =
 - Line breaks fixed for email responses.

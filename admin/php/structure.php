@@ -78,6 +78,7 @@
 						<option value="subscription" 	{{#is action "subscription"}}selected="selected"{{/is}}					>Subscription Form</option>
 						<option value="button" 				{{#is action "button"}}selected="selected"{{/is}} 							>Button Link</option>
 						<option value="download" 			{{#is action "download"}}selected="selected"{{/is}} 						>Free Download</option>
+						<option value="petition" 			{{#is action "petition"}}selected="selected"{{/is}} 						>Petition</option>
 						<option value="social" 				{{#is action "social"}}selected="selected"{{/is}} 			disabled>Social Shares</option>
 						<option value="callback" 			{{#is action "callback"}}selected="selected"{{/is}}			disabled>Call Me Back Button</option>
 						<option value="appointment" 	{{#is action "appointment"}}selected="selected"{{/is}}	disabled>Appointment Booker</option>
@@ -508,20 +509,23 @@
 		<td>{{ visitor.computer }}</td> -->
 		<td>{{ created_at }}</td>
 		<td><a href="#" class="show_response_details">Details</a></td>
+		<td><a href="#" class="delete_response">Delete</a></td>
 	</tr>
 	<tr class="response_details response_details_{{ id }}">
-		<td colspan="6">
+		<td colspan="7">
 			<ul style="line-height: 1em; ">
 				{{#is data.action "button"}}
 					<li>Button was clicked and redirected to <a href="{{data.redirect}}">{{data.redirect}}</a>.</li>
 				{{else}}
 					{{#eachProperty data}}
 						{{#isnt key "cta_name"}}
-							{{#is key "email"}}
-								<li>{{titleize key}}: <a href="mailto:{{value}}">{{value}}</a></li>
-							{{else}}
-								<li>{{titleize key}}: {{value}}</li>
-							{{/is}}
+							{{#isnt key "action"}}
+								{{#is key "email"}}
+									<li>{{titleize key}}: <a href="mailto:{{value}}">{{value}}</a></li>
+								{{else}}
+									<li>{{titleize key}}: {{value}}</li>
+								{{/is}}
+							{{/isnt}}
 						{{/isnt}}
 					{{/eachProperty}}
 				{{/is}}
@@ -546,6 +550,7 @@
 					<!-- <th>Location</th>
 					<th>Computer</th> -->
 					<th>Submitted At</th>
+					<th></th>
 					<th></th>
 				</tr>
 			</thead>

@@ -585,6 +585,29 @@
       WPMW.addEmail("append", data);
       return false;
     });
+    $(document).on("click", ".delete_response", function() {
+      var id, response;
+      if (confirm("This will permanently delete this response. Are you sure you want to delete this response?")) {
+        response = $(this).closest(".response");
+        id = response.attr("data-id");
+        $(".response_details_" + id + ", .response_" + id).removeClass("selected_response");
+        $(".response_" + id).hide();
+        $.post(ajaxurl, {
+          action: "cta_delete_response",
+          id: id
+        }, function(response) {
+          var json;
+          json = JSON.parse(response);
+          if (json.success) {
+            return $(".response_details_" + id + ", .response_" + id).remove();
+          } else {
+            $(".response_" + id).show();
+            return alert("We were unable to delete this response. Its possible its already deleted.");
+          }
+        });
+      }
+      return false;
+    });
     $(document).on("click", ".delete_email", function() {
       if (confirm("Are you sure you want to delete this field?")) {
         $(this).closest(".action_email").remove();

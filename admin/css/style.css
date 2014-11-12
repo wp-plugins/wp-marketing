@@ -338,6 +338,8 @@
   display: none; }
 .wpmarketing .responses .response td, .wpmarketing .responses .response_details td {
   border-bottom: 1px solid #eee; }
+.wpmarketing .responses .response ul, .wpmarketing .responses .response_details ul {
+  margin: 0 !important; }
 .wpmarketing .responses .response.response_details, .wpmarketing .responses .response_details.response_details {
   display: none; }
 .wpmarketing .responses .response.selected_response, .wpmarketing .responses .response_details.selected_response {
