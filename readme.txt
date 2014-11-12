@@ -1,5 +1,5 @@
 === WP Marketing ===
-Version: 1.0.4
+Version: 1.0.5
 URI: http://wpmarketing.guru
 Contributors: dallas22ca
 Author: Dallas Read
@@ -113,7 +113,11 @@ Here are the next things on the list for WP Marketing:
 
 == Changelog ==
 
-= 1.1.0 =
+= 1.0.4 =
+- Added countUp responses counter shortcode.
+- Delete responses button.
+
+= 1.0.3 =
 * Added Duplicate button for CTAs.
 * New Widget added.
 * Monthly plan added.
