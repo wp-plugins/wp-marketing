@@ -154,6 +154,7 @@
 							<span class="hint">
 								Select and checkbox fields are defined in the Placeholder, delimited by a semi-colon (;).<br>
 								To mark a checkbox as checked, make the first character an asterisk (*).
+								To use a label that's different from the value, separate it by a pipe (|).
 							</span>
 						</label>
 						

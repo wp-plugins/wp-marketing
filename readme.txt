@@ -1,5 +1,5 @@
 === WP Marketing ===
-Version: 1.0.5
+Version: 1.0.6
 URI: http://wpmarketing.guru
 Contributors: dallas22ca
 Author: Dallas Read
@@ -91,6 +91,9 @@ Here are the next things on the list for WP Marketing:
 
 == Upgrade Notice ==
 
+= 1.0.6 =
+- Add labels to checkboxes.
+
 = 1.0.5 =
 - Checkboxes and Dropdown lists added.
 - "Every time til they interact" now includes logged in Users.
@@ -116,6 +119,9 @@ Here are the next things on the list for WP Marketing:
 * Initial public release!
 
 == Changelog ==
+
+= 1.0.6 =
+- Add labels to checkboxes.
 
 = 1.0.5 =
 - Checkboxes and Dropdown lists added.
