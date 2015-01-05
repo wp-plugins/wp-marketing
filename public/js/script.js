@@ -25,8 +25,7 @@
         ids = false;
       }
       data = {
-        action: "ctas_fetch_all",
-        "public": true
+        action: "ctas_fetch_all"
       };
       return $.post(WPMW.ajaxurl, data, function(response) {
         var cta, ctas, _i, _len, _results;

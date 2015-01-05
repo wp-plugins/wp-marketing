@@ -11,7 +11,7 @@ Author URI: http://www.DallasRead.com
 Text Domain: wp-marketing
 marketing, customer support, customer service, conversions, Call-To-Action, cta, hello bar, mailchimp, aweber, getresponse, subscribe, subscription, newsletter
 Requires at least: 3.6
-Tested up to: 4.0
+Tested up to: 4.1
 Stable tag: trunk
 License: MIT
 
@@ -385,6 +385,9 @@ class WPMarketing {
 		$ctas_table = $wpdb->prefix . "wpmarketing_ctas";
 		$ctas = $wpdb->get_results("SELECT * FROM $ctas_table ORDER BY updated_at DESC", ARRAY_A);
 		
+		// GET VISITOR BY USER_ID
+		// IF RESPONSE FOR VISITOR EXISTS && TRIGGER[EXPIRE] == "0", DON'T ADD
+		
 		foreach ($ctas as $key => $cta) {
 			$ctas[$key]["data"] = stripslashes_deep(json_decode(stripslashes_deep($cta["data"]), true)["data"]);
 			$ctas[$key]["name"] = stripslashes($ctas[$key]["name"]);
@@ -426,6 +429,8 @@ class WPMarketing {
 		$ctas_table = $wpdb->prefix . "wpmarketing_ctas";
 		$events_table = $wpdb->prefix . "wpmarketing_events";
 		$visitors_table = $wpdb->prefix . "wpmarketing_visitors";
+		$current_user_id = get_current_user_id();
+		$submittable = true;
 		
 		$submit = array(
 			"verb" => "submit",
@@ -437,101 +442,125 @@ class WPMarketing {
 		
 		if (isset($submit["data"]["email"])) { $email = $submit["data"]["email"]; }
 		$cta = $wpdb->get_row("SELECT * FROM $ctas_table WHERE id = $submit[cta_id] LIMIT 1", ARRAY_A);
+		$cta_data = json_decode(stripslashes_deep($cta["data"]), true);
 		
-		if ($cta != null) {
-			$submit["data"]["cta_name"] = $cta["name"];
-			$current_user_id = get_current_user_id();
-			$visitor = null;
-			
-			if ($current_user_id != 0) {
-				$visitor = $wpdb->get_row("SELECT * FROM $visitors_table WHERE user_id = $current_user_id LIMIT 1", ARRAY_A);	
-			}
-			
-			if ($visitor == null && isset($email)) {
-				$visitor = $wpdb->get_row("SELECT * FROM $visitors_table WHERE email = '$email' LIMIT 1", ARRAY_A);	
-			}
-			
-			if ($visitor == null) {
-				$visitor_data_object = $submit["data"];
-				unset($visitor_data_object["action"]);
-				unset($visitor_data_object["redirect"]);
-				$visitor = array(
-					"user_id" => $current_user_id,
-					"data" => addslashes(json_encode($visitor_data_object)),
-					"created_at" => current_time("mysql"),
-					"updated_at" => current_time("mysql")
-				);
-				if (isset($email)) { $visitor["email"] = $email; }
-				
-				if (isset($submit["data"])) {
-					$wpdb->insert( $visitors_table, $visitor );
-					$visitor["id"] = $wpdb->insert_id;
-				}
-			} else {
-				$visitor["data"] = json_decode(stripslashes_deep($visitor["data"]), true);
-				$visitor_data_object = array_merge($visitor["data"], $submit["data"]);
-				unset($visitor_data_object["action"]);
-				unset($visitor_data_object["redirect"]);
-				$update = array( 
-					"data" => addslashes(json_encode($visitor_data_object)),
-					"updated_at" => current_time("mysql")
-				);
-				if (isset($email)) { $visitor["email"] = $email; $update["email"] = $email; }
-				$wpdb->update( $visitors_table, $update, array( "id" => $visitor["id"] ) );
-			}
-			
-			$submit["visitor_id"] = $visitor["id"];
-			$submit["data"] = addslashes(json_encode($submit["data"]));
-			$response = $wpdb->insert( $events_table, $submit );
-			$submit["success"] = $response != false;
-			
-			if ($submit["success"]) {
-				$submit["data"] = json_decode(stripslashes_deep($submit["data"]), true);
-				$submit["cta"] = json_decode(stripslashes_deep($cta["data"]), true);
-				$visitor["data"] = $visitor_data_object;
-				$submit["visitor"] = $visitor;
-				
-				if (isset($email)) { //&& $wpmarketing["status"] == "unlocked"
-					$submit["sync"] = array();
-					$has_mailchimp = isset($submit["cta"]["data"]["sync"]["mailchimp"]["list_id"]);
-					$has_zendesk = isset($submit["cta"]["data"]["sync"]["zendesk"]["sync"]);
-					$has_aweber = isset($submit["cta"]["data"]["sync"]["aweber"]["list_id"]);
-					$has_emails = isset($submit["cta"]["data"]["emails"]);
-					
-					if ($has_emails) {
-						require "admin/php/vendor/Mustache/Autoloader.php";
-						Mustache_Autoloader::register();
-						
-						foreach ($submit["cta"]["data"]["emails"] as $email) {
-							WPMarketing::submit_notify($email, $visitor["data"]);
-						}
-					}
-					
-					if ($has_mailchimp) {
-						$mailchimp_list_id = $submit["cta"]["data"]["sync"]["mailchimp"]["list_id"];
-						
-						if ($mailchimp_list_id != "") {
-							$submit["sync"]["mailchimp"] = WPMarketing::mailchimp_subscribe($visitor["data"], $mailchimp_list_id);
-						}
-					}
-					
-					if ($has_zendesk) {
-						$submit["sync"]["zendesk"] = WPMarketing::zendesk_subscribe($visitor["data"]);
-					}
-					
-					if ($has_aweber) {
-						$aweber_list_id = $submit["cta"]["data"]["sync"]["aweber"]["list_id"];
-						
-						if ($aweber_list_id != "") {
-							$submit["sync"]["aweber"] = WPMarketing::aweber_subscribe($visitor["data"], $aweber_list_id);
-						}
-					}
-				}
+		if ($cta_data["data"]["triggers"][0]["expire"] == "0") {
+			$visitor = $wpdb->get_row("SELECT * FROM $visitors_table WHERE user_id = $current_user_id LIMIT 1", ARRAY_A);
+			$results = $wpdb->get_var("SELECT COUNT(*) FROM $events_table WHERE visitor_id = $visitor[id] AND cta_id = $submit[cta_id]", ARRAY_A);
+
+			if ($wpdb->num_rows > 0) {
+				$submittable = false;
 			}
 		}
 		
-		$submit["success"] = $response != false;
-		if (!$submit["success"]) { $submit["error"] = $wpdb->last_error; }
+		if (!$submittable) {
+			$submit["error"] = "You have already submitted this form. Your information has already been recorded.";
+			$submit["success"] = false;
+		} else {
+			if ($cta != null) {
+				$submit["data"]["cta_name"] = $cta["name"];
+				$visitor = null;
+			
+				if ($current_user_id != 0) {
+					$visitor = $wpdb->get_row("SELECT * FROM $visitors_table WHERE user_id = $current_user_id LIMIT 1", ARRAY_A);	
+				}
+			
+				if ($visitor == null && isset($email)) {
+					$visitor = $wpdb->get_row("SELECT * FROM $visitors_table WHERE email = '$email' LIMIT 1", ARRAY_A);	
+				}
+			
+				if ($visitor == null) {
+					$visitor_data_object = $submit["data"];
+					unset($visitor_data_object["action"]);
+					unset($visitor_data_object["redirect"]);
+					$visitor = array(
+						"user_id" => $current_user_id,
+						"data" => addslashes(json_encode($visitor_data_object)),
+						"created_at" => current_time("mysql"),
+						"updated_at" => current_time("mysql")
+					);
+					if (isset($email)) { $visitor["email"] = $email; }
+				
+					if (isset($submit["data"])) {
+						$wpdb->insert( $visitors_table, $visitor );
+						$visitor["id"] = $wpdb->insert_id;
+					}
+				} else {
+					$visitor["data"] = json_decode(stripslashes_deep($visitor["data"]), true);
+					$visitor_data_object = array_merge($visitor["data"], $submit["data"]);
+					unset($visitor_data_object["action"]);
+					unset($visitor_data_object["redirect"]);
+					$update = array( 
+						"data" => addslashes(json_encode($visitor_data_object)),
+						"updated_at" => current_time("mysql")
+					);
+					if (isset($email)) { $visitor["email"] = $email; $update["email"] = $email; }
+					$wpdb->update( $visitors_table, $update, array( "id" => $visitor["id"] ) );
+				}
+			
+				$submit["visitor_id"] = $visitor["id"];
+				$submit["data"] = addslashes(json_encode($submit["data"]));
+				$response = $wpdb->insert( $events_table, $submit );
+				$submit["success"] = $response != false;
+				
+				if ($submit["success"]) {
+					$submit["data"] = json_decode(stripslashes_deep($submit["data"]), true);
+					$submit["cta"] = $cta_data;
+					$visitor["data"] = $visitor_data_object;
+					$submit["visitor"] = $visitor;
+					
+					if ($current_user_id != 0) {
+						update_user_meta( $current_user_id, "cta_submitted_$submit[cta_id]", true );
+					}
+				
+					if (isset($email)) { //&& $wpmarketing["status"] == "unlocked"
+						$submit["sync"] = array();
+						$has_mailchimp = isset($submit["cta"]["data"]["sync"]["mailchimp"]["list_id"]);
+						$has_zendesk = isset($submit["cta"]["data"]["sync"]["zendesk"]["sync"]);
+						$has_aweber = isset($submit["cta"]["data"]["sync"]["aweber"]["list_id"]);
+						$has_emails = isset($submit["cta"]["data"]["emails"]);
+						$has_password = isset($visitor["data"]["password"]) && $visitor["data"]["password"] != "";
+						$has_email = isset($visitor["data"]["email"]) && $visitor["data"]["email"] != "";
+					
+						if ($has_emails) {
+							require "admin/php/vendor/Mustache/Autoloader.php";
+							Mustache_Autoloader::register();
+						
+							foreach ($submit["cta"]["data"]["emails"] as $email) {
+								WPMarketing::submit_notify($email, $visitor["data"]);
+							}
+						}
+					
+						if ($has_mailchimp) {
+							$mailchimp_list_id = $submit["cta"]["data"]["sync"]["mailchimp"]["list_id"];
+						
+							if ($mailchimp_list_id != "") {
+								$submit["sync"]["mailchimp"] = WPMarketing::mailchimp_subscribe($visitor["data"], $mailchimp_list_id);
+							}
+						}
+					
+						if ($has_zendesk) {
+							$submit["sync"]["zendesk"] = WPMarketing::zendesk_subscribe($visitor["data"]);
+						}
+					
+						if ($has_aweber) {
+							$aweber_list_id = $submit["cta"]["data"]["sync"]["aweber"]["list_id"];
+						
+							if ($aweber_list_id != "") {
+								$submit["sync"]["aweber"] = WPMarketing::aweber_subscribe($visitor["data"], $aweber_list_id);
+							}
+						}
+					
+						if ($has_password && $has_email) {
+							// do_action( "cta_create_user", $visitor["data"] );
+						}
+					}
+				}
+			}
+		
+			$submit["success"] = $response != false;
+			if (!$submit["success"]) { $submit["error"] = $wpdb->last_error; }
+		}
 		
 		die(json_encode($submit));
 	}
@@ -574,17 +603,26 @@ class WPMarketing {
 		
 		$data = array();
 		$data["cta_id"] = $_POST["cta_id"];
-		$data["start"] = date("Y-m-d H:i:s", strtotime($_POST["start"]));
-		$data["finish"] = date("Y-m-d H:i:s", strtotime($_POST["finish"] . "+1 days"));
 		
-		$data["cta_sql"] = $wpdb->prepare(
-			"SELECT * FROM $events_table WHERE verb = %s and cta_id = %s and created_at >= %s and created_at <= %s ORDER BY created_at DESC",
-			"submit",
-			$data["cta_id"],
-			$data["start"],
-			$data["finish"]
-		);
-		
+		if (isset($_POST["start"]) && isset($_POST["finish"])) {
+			$data["start"] = date("Y-m-d H:i:s", strtotime($_POST["start"]));
+			$data["finish"] = date("Y-m-d H:i:s", strtotime($_POST["finish"] . "+1 days"));
+			
+			$data["cta_sql"] = $wpdb->prepare(
+				"SELECT * FROM $events_table WHERE verb = %s and cta_id = %s and created_at >= %s and created_at <= %s ORDER BY created_at DESC",
+				"submit",
+				$data["cta_id"],
+				$data["start"],
+				$data["finish"]
+			);
+		} else {
+			$data["cta_sql"] = $wpdb->prepare(
+				"SELECT * FROM $events_table WHERE verb = %s and cta_id = %s ORDER BY created_at DESC",
+				"submit",
+				$data["cta_id"]
+			);
+		}
+
 		$data["responses"] = $wpdb->get_results( $data["cta_sql"], ARRAY_A);
 		
 		$data["visitor_ids"] = array_map(function($r) {
@@ -598,6 +636,12 @@ class WPMarketing {
 			$visitor = $data["visitors"][$response["visitor_id"]];
 			$data["responses"][$key]["data"] = json_decode(stripslashes_deep($response["data"]));
 			$data["responses"][$key]["visitor"] = json_decode(stripslashes_deep($visitor->data));
+			
+			if (isset($_REQUEST["include_user"]) && $visitor->user_id != 0) {
+				$user = (array) get_userdata( $visitor->user_id );
+				$user["meta"] = (array) get_user_meta( $visitor->user_id );
+				$data["responses"][$key]["user"] = $user;
+			}
 		}
 		
 		$data["count"] = count($data["responses"]);
@@ -801,11 +845,11 @@ class WPMarketing {
 	public static function cta_count_responses() {
 		$count = 0;
 
-		if (isset($_POST["id"])) {
+		if (isset($_REQUEST["id"])) {
 			global $wpdb;
 			$events_table = $wpdb->prefix . "wpmarketing_events";
 			$wpdb->get_results( $wpdb->prepare("SELECT * FROM $events_table WHERE verb = %s AND cta_id = %d",
-				"submit", $_POST["id"]
+				"submit", $_REQUEST["id"]
 			), ARRAY_A);
 			$count = $wpdb->num_rows;
 		}

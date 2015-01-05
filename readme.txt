@@ -7,7 +7,7 @@ Author URI: http://www.DallasRead.com
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=NX9NZCDNRD3CC
 Tags: marketing, customer support, customer service, conversions, Call-To-Action, cta, hello bar, mailchimp, aweber, getresponse, subscribe, subscription, newsletter
 Requires at least: 3.6
-Tested up to: 4.0
+Tested up to: 4.1
 Stable tag: trunk
 License: MIT
 
@@ -83,7 +83,6 @@ Here are the next things on the list for WP Marketing:
 * Overview page with graphs (eg. times CTA is shown vs. interacted)
 * Poll for responses
 * Mobile formatted WP Admin
-* Inline CTAs can be used as widgets
 * Preview button
 * UI Effects
 * CTAs: Social Shares, Free Download, Call Me Back Button, Appointment Booker, Poll, Comment Stream, Survey, Live Chat, Euro Cookie Notice, Cobrowsing
@@ -91,6 +90,11 @@ Here are the next things on the list for WP Marketing:
 * Translations / Internationalization
 
 == Upgrade Notice ==
+
+= 1.0.5 =
+- Checkboxes and Dropdown lists added.
+- "Every time til they interact" now includes logged in Users.
+- Added required to fields.
 
 = 1.0.4 =
 - Added countUp responses counter shortcode.
@@ -112,6 +116,11 @@ Here are the next things on the list for WP Marketing:
 * Initial public release!
 
 == Changelog ==
+
+= 1.0.5 =
+- Checkboxes and Dropdown lists added.
+- "Every time til they interact" now includes logged in Users.
+- Added required to fields.
 
 = 1.0.4 =
 - Added countUp responses counter shortcode.

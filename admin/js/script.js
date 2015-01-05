@@ -1,93 +1,94 @@
 (function() {
   this.WPMW || (this.WPMW = {});
 
-  Swag.registerHelpers(Handlebars);
-
   jQuery(document).ready(function($) {
-    Handlebars.registerHelper("ifEmptyObject", function(item, options) {
-      if ($.isEmptyObject(item)) {
-        return options.fn(this);
-      } else {
-        return options.inverse(this);
-      }
-    });
-    $(window).on("hashchange", function() {
-      var h, hash, header, header_template, info, layout, layout_data, layout_template, match, page, parent_h, parent_hash, route, tab, tab_template, _base, _ref;
-      hash = window.location.hash.replace("#!", "");
-      if (!hash.length) {
-        window.location.hash = "#!/";
-      }
-      h = hash.split("/");
-      parent_h = window.location.hash.split("/");
-      parent_h.pop();
-      parent_hash = parent_h.join("/");
-      $("[data-wpm-loading]").show();
-      _ref = WPMW.routes;
-      for (route in _ref) {
-        info = _ref[route];
-        match = new RegExp(route).test(hash);
-        if (match) {
-          page = {
-            id: h[2],
-            page: {}
-          };
-          if (typeof info.preload === "function") {
-            page = info.preload(page);
-          }
-          page.page || (page.page = {});
-          if (typeof info.title !== "undefined") {
-            (_base = page.page).title || (_base.title = info.title);
-          }
-          header = $("#wpmarketing_header_" + info.layout);
-          if (header.length) {
-            header_template = header.html();
-            header = Handlebars.compile(header_template);
-            page.header = header(page);
-          }
-          tab_template = $("#wpmarketing_tab_" + info.tab).html();
-          tab_template || (tab_template = "");
-          tab = Handlebars.compile(tab_template);
-          if (WPMW.current_layout === info.layout) {
-            $("[data-wpm-tab]").hide().html(tab(page));
-          } else {
-            layout_template = $("#wpmarketing_layout_" + info.layout).html();
-            layout_template || (layout_template = "");
-            layout = Handlebars.compile(layout_template);
-            page.ctas_length = WPMW.ctas.length || 0;
-            page.ctas = WPMW.ctas;
-            page.outlet = tab(page);
-            layout_data = page;
-            $("[data-wpm-layout]").hide().html(layout(layout_data));
-          }
-          WPMW.current_tab = info.tab;
-          WPMW.current_layout = info.layout;
-          WPMW.current_id = page.id;
-          if ($.isEmptyObject(WPMW.ctas)) {
-            $(".ctas .hold_place").show();
-          } else {
-            $(".ctas .hold_place").hide();
-          }
-          if (typeof info.complete === "function") {
-            info.complete();
-          }
-          break;
+    if ($(".wrap.wpmarketing").length) {
+      Swag.registerHelpers();
+      Handlebars.registerHelper("ifEmptyObject", function(item, options) {
+        if ($.isEmptyObject(item)) {
+          return options.fn(this);
+        } else {
+          return options.inverse(this);
         }
-      }
-      if (!match) {
-        WPMW.current_tab = null;
-        WPMW.current_layout = null;
-        WPMW.current_id = null;
-        $("[data-wpm-container]").html("");
-      }
-      $("[data-wpm-layout] a").removeClass("parent_of_current").removeClass("current");
-      $("[data-wpm-layout] a[href='" + window.location.hash + "']").addClass("current");
-      $("[data-wpm-layout] a[href='" + parent_hash + "']").addClass("parent_of_current");
-      $("[data-wpm-loading]").hide();
-      return $("[data-wpm-layout], [data-wpm-tab]").fadeIn(150);
-    });
-    return WPMW.fetchCTAs(function() {
-      return $(window).trigger("hashchange");
-    });
+      });
+      $(window).on("hashchange", function() {
+        var h, hash, header, header_template, info, layout, layout_data, layout_template, match, page, parent_h, parent_hash, route, tab, tab_template, _base, _ref;
+        hash = window.location.hash.replace("#!", "");
+        if (!hash.length) {
+          window.location.hash = "#!/";
+        }
+        h = hash.split("/");
+        parent_h = window.location.hash.split("/");
+        parent_h.pop();
+        parent_hash = parent_h.join("/");
+        $("[data-wpm-loading]").show();
+        _ref = WPMW.routes;
+        for (route in _ref) {
+          info = _ref[route];
+          match = new RegExp(route).test(hash);
+          if (match) {
+            page = {
+              id: h[2],
+              page: {}
+            };
+            if (typeof info.preload === "function") {
+              page = info.preload(page);
+            }
+            page.page || (page.page = {});
+            if (typeof info.title !== "undefined") {
+              (_base = page.page).title || (_base.title = info.title);
+            }
+            header = $("#wpmarketing_header_" + info.layout);
+            if (header.length) {
+              header_template = header.html();
+              header = Handlebars.compile(header_template);
+              page.header = header(page);
+            }
+            tab_template = $("#wpmarketing_tab_" + info.tab).html();
+            tab_template || (tab_template = "");
+            tab = Handlebars.compile(tab_template);
+            if (WPMW.current_layout === info.layout) {
+              $("[data-wpm-tab]").hide().html(tab(page));
+            } else {
+              layout_template = $("#wpmarketing_layout_" + info.layout).html();
+              layout_template || (layout_template = "");
+              layout = Handlebars.compile(layout_template);
+              page.ctas_length = WPMW.ctas.length || 0;
+              page.ctas = WPMW.ctas;
+              page.outlet = tab(page);
+              layout_data = page;
+              $("[data-wpm-layout]").hide().html(layout(layout_data));
+            }
+            WPMW.current_tab = info.tab;
+            WPMW.current_layout = info.layout;
+            WPMW.current_id = page.id;
+            if ($.isEmptyObject(WPMW.ctas)) {
+              $(".ctas .hold_place").show();
+            } else {
+              $(".ctas .hold_place").hide();
+            }
+            if (typeof info.complete === "function") {
+              info.complete();
+            }
+            break;
+          }
+        }
+        if (!match) {
+          WPMW.current_tab = null;
+          WPMW.current_layout = null;
+          WPMW.current_id = null;
+          $("[data-wpm-container]").html("");
+        }
+        $("[data-wpm-layout] a").removeClass("parent_of_current").removeClass("current");
+        $("[data-wpm-layout] a[href='" + window.location.hash + "']").addClass("current");
+        $("[data-wpm-layout] a[href='" + parent_hash + "']").addClass("parent_of_current");
+        $("[data-wpm-loading]").hide();
+        return $("[data-wpm-layout], [data-wpm-tab]").fadeIn(150);
+      });
+      return WPMW.fetchCTAs(function() {
+        return $(window).trigger("hashchange");
+      });
+    }
   });
 
   this.WPMW || (this.WPMW = {});
@@ -280,6 +281,12 @@
       dialog: ["button", "title", "fields", "download", "closable", "text_background", "description", "sync", "escapable", "clickable"],
       inline: ["button", "title", "fields", "download", "description", "sync", "container"]
     },
+    petition: {
+      bar: ["button", "title", "fields", "redirect", "closable", "sync", "sticky"],
+      box: ["button", "title", "fields", "redirect", "closable", "text_background", "description", "sync"],
+      dialog: ["button", "title", "fields", "redirect", "closable", "text_background", "description", "sync", "escapable", "clickable"],
+      inline: ["button", "title", "fields", "redirect", "description", "sync", "container"]
+    },
     appointment: {
       bar: ["button", "title", "fields", "redirect", "closable", "sync", "sticky"],
       box: ["button", "title", "fields", "redirect", "closable", "text_background", "description", "sync"],
@@ -299,8 +306,6 @@
       inline: ["button", "title", "fields", "redirect", "description", "social", "container"]
     }
   };
-
-  Swag.registerHelpers();
 
   (function($) {
     WPMW.randomToken = function() {
@@ -562,7 +567,9 @@
       return $("[data-not-trigger-event][data-not-trigger-event!='" + event + "']").show();
     });
     $(document).on("click", ".add_field", function() {
-      WPMW.addField("append");
+      WPMW.addField("append", {
+        required: true
+      });
       return false;
     });
     $(document).on("click", ".add_email", function() {

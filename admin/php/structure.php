@@ -18,12 +18,16 @@
 </div>
 <script id="wpmarketing_field" type="text/x-handlebars-template">
 	<tr class="cta_field_row">
+		<td><input type="checkbox" name="fields[][required]" value="true" {{#if required}}checked="checked"{{/if}}></td>
 		<td>
 			<select name="fields[][type]">
-				<option value="text"			{{#is type "text"}}selected="selected"{{/is}}			>Text</option>
-				<option value="email"			{{#is type "email"}}selected="selected"{{/is}}		>Email</option>
-				<option value="tel"				{{#is type "tel"}}selected="selected"{{/is}}			>Telephone</option>
-				<option value="textarea"	{{#is type "textarea"}}selected="selected"{{/is}}	>Large Text</option>
+				<option value="text"			{{#is type "text"		 }}selected="selected"{{/is}}>Text</option>
+				<option value="email"			{{#is type "email"	 }}selected="selected"{{/is}}>Email</option>
+				<option value="tel"				{{#is type "tel"		 }}selected="selected"{{/is}}>Telephone</option>
+				<option value="textarea"	{{#is type "textarea"}}selected="selected"{{/is}}>Large Text</option>
+				<option value="password"	{{#is type "password"}}selected="selected"{{/is}}>Password</option>
+				<option value="checkbox"	{{#is type "checkbox"}}selected="selected"{{/is}}>Checkboxes</option>
+				<option value="select"		{{#is type "select"	 }}selected="selected"{{/is}}>Dropdown List</option>
 			</select>
 		</td>
 		<td><input type="text" name="fields[][label]" value="{{ label }}"></td>
@@ -145,10 +149,18 @@
 					</div>
 					
 					<div class="field" data-field="fields">
-						<label>Which fields would like to include?</label>
+						<label>
+							Which fields would like to include?
+							<span class="hint">
+								Select and checkbox fields are defined in the Placeholder, delimited by a semi-colon (;).<br>
+								To mark a checkbox as checked, make the first character an asterisk (*).
+							</span>
+						</label>
+						
 						<table class="fields table">
 							<thead>
 								<tr>
+									<th>Required</th>
 									<th>Type</th>
 									<th>Label</th>
 									<th>Key</th>

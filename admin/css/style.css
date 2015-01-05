@@ -31,7 +31,7 @@
     display: block; }
 .wpmarketing .table {
   width: 100%; }
-  .wpmarketing .table input, .wpmarketing .table select {
+  .wpmarketing .table input[type='text'], .wpmarketing .table input[type='email'], .wpmarketing .table input[type='password'], .wpmarketing .table select {
     width: 100%; }
 .wpmarketing .has_datepicker {
   width: 8em; }
