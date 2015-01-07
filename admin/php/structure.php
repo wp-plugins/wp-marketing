@@ -66,6 +66,10 @@
 		
 			<div class="contents">
 				
+				<p class="cta_shortcode" data-field="container">
+					[cta id={{id}}]
+				</p>
+				
 				{{#if id}}
 					<div class="field">
 						<label for="name">What is the name of this CTA (for your own reference)?</label>
@@ -83,11 +87,10 @@
 						<option value="button" 				{{#is action "button"}}selected="selected"{{/is}} 							>Button Link</option>
 						<option value="download" 			{{#is action "download"}}selected="selected"{{/is}} 						>Free Download</option>
 						<option value="petition" 			{{#is action "petition"}}selected="selected"{{/is}} 						>Petition</option>
-						<option value="social" 				{{#is action "social"}}selected="selected"{{/is}} 			disabled>Social Shares</option>
+						<option value="social" 				{{#is action "social"}}selected="selected"{{/is}} 							>Social Shares</option>
 						<option value="callback" 			{{#is action "callback"}}selected="selected"{{/is}}			disabled>Call Me Back Button</option>
 						<option value="appointment" 	{{#is action "appointment"}}selected="selected"{{/is}}	disabled>Appointment Booker</option>
 						<option value="other" 				{{#is action "other"}}selected="selected"{{/is}} 				disabled>Poll</option>
-						<option value="other" 				{{#is action "other"}}selected="selected"{{/is}} 				disabled>Comment Stream</option>
 						<option value="other" 				{{#is action "other"}}selected="selected"{{/is}} 				disabled>Survey</option>
 						<option value="other" 				{{#is action "other"}}selected="selected"{{/is}} 				disabled>Live Chat</option>
 						<option value="other" 				{{#is action "other"}}selected="selected"{{/is}} 				disabled>Euro Cookie Notice</option>
@@ -106,6 +109,14 @@
 						<li data-title="Left Box" data-style="box" data-position="left" {{#is position "left"}}{{#is style "box"}}class="selected"{{/is}}{{/is}}>
 							<img src="<?php echo plugins_url("wp-marketing/admin/imgs/ctas/box_left.png"); ?>">
 							Left Box
+						</li>
+						<li data-title="Mid-Right Box" data-style="midbox" data-position="right" {{#is position "right"}}{{#is style "midbox"}}class="selected"{{/is}}{{/is}}>
+							<img src="<?php echo plugins_url("wp-marketing/admin/imgs/ctas/midbox_right.png"); ?>">
+							Mid-Right Box
+						</li>
+						<li data-title="Mid-Left Box" data-style="midbox" data-position="left" {{#is position "left"}}{{#is style "midbox"}}class="selected"{{/is}}{{/is}}>
+							<img src="<?php echo plugins_url("wp-marketing/admin/imgs/ctas/midbox_left.png"); ?>">
+							Mid-Left Box
 						</li>
 						<li data-title="Pop Over" data-style="dialog" {{#is style "dialog"}}class="selected"{{/is}}>
 							<img src="<?php echo plugins_url("wp-marketing/admin/imgs/ctas/dialog.png"); ?>">
@@ -128,9 +139,17 @@
 				
 				<div class="wpmarketing_clear"></div>
 				
+				<div class="field">
+					<label>
+						<input type="checkbox" name="disabled" id="disabled" value="1" {{#if disabled}}checked="checked"{{/if}}> Disable this CTA
+					</label>
+				</div>
+				
+				<div class="wpmarketing_clear"></div>
+				
 				<div class="nav-tab-wrapper cta_tabs">
-					<a href="integrations"	class="nav-tab cta_show_tab">Integrations</a>
-					<a href="actions" 			class="nav-tab cta_show_tab">Actions</a>
+					<a href="integrations"	class="nav-tab cta_show_tab" data-field="button">Integrations</a>
+					<a href="actions" 			class="nav-tab cta_show_tab" data-field="button">Actions</a>
 					<a href="visibility"		class="nav-tab cta_show_tab">Visibility</a>
 					<a href="appearance"		class="nav-tab cta_show_tab">Appearance</a>
 					<a href="setup"					class="nav-tab cta_show_tab selected">Setup</a>
@@ -144,8 +163,8 @@
 					</div>
 					
 					<div class="field" data-field="description">
-						<label for="description">What is the subheadline?</label>
-						<input type="text" name="description" id="description" class="full_width" value="{{ description }}">
+						<label for="description">What is the subheadline or content paragraph?</label>
+						<textarea name="description" id="description" class="full_width">{{ description }}</textarea>
 					</div>
 					
 					<div class="field" data-field="fields">
@@ -183,6 +202,53 @@
 						<label for="button">What should the submit button say?</label>
 						<input type="text" name="button" id="button" class="full_width" value="{{ button }}">
 					</div>
+					
+					<div class="field" data-field="social">
+						<label for="social_networks">Which social networks would you like to include?</label>
+						
+						<ul>
+							<li>
+								<label>
+									<input type="checkbox" name="social[][share]" value="https://www.facebook.com/sharer/sharer.php?u={{url}}"> Facebook
+								</label>
+							</li>
+							<li>
+								<label>
+									<input type="checkbox" name="social[][share]" value="https://www.facebook.com/sharer/sharer.php?u={{url}}"> Twitter
+								</label>
+							</li>
+							<li>
+								<label>
+									<input type="checkbox" name="social[][share]" value="https://www.facebook.com/sharer/sharer.php?u={{url}}"> Linked In
+								</label>
+							</li>
+							<li>
+								<label>
+									<input type="checkbox" name="social[][share]" value="https://www.facebook.com/sharer/sharer.php?u={{url}}"> Pinterest
+								</label>
+							</li>
+							<li>
+								<label>
+									<input type="checkbox" name="social[][share]" value="https://www.facebook.com/sharer/sharer.php?u={{url}}"> Reddit
+								</label>
+							</li>
+							<li>
+								<label>
+									<input type="checkbox" name="social[][share]" value="https://www.facebook.com/sharer/sharer.php?u={{url}}"> Digg
+								</label>
+							</li>
+							<li>
+								<label>
+									<input type="checkbox" name="social[][share]" value="https://www.facebook.com/sharer/sharer.php?u={{url}}"> Delicious
+								</label>
+							</li>
+							<li>
+								<label>
+									<input type="checkbox" name="social[][share]" value="https://www.facebook.com/sharer/sharer.php?u={{url}}"> Evernote
+								</label>
+							</li>
+						</ul>
+					</div>
 				</div>
 				
 				<div class="cta_tab cta_tab_appearance">
@@ -192,7 +258,12 @@
 					</div>
 
 					<div class="field" data-field="container">
-						<label for="container">What html element are we placing the CTA into?</label>
+						<label for="container">
+							What html element are we placing the CTA into?
+							<span class="hint">
+								You can also use [cta id={{id}}] as a shortcode.
+							</span>
+						</label>
 						<input type="text" name="container" id="container" value="{{ container }}">
 					</div>
 				
@@ -208,7 +279,19 @@
 					
 					<div class="css_fields" style="{{#is disable_css "1"}}display: none;{{/is}}">
 						
+						<div class="field half_field" data-field="heading_background">
+							<label for="heading_background">Headline Background</label>
+							<input type="text" name="appearance[heading][background]" id="heading_background" class="has_colourpicker" value="{{ appearance.heading.background }}">
+						</div>
+
 						<div class="field half_field">
+							<label for="heading_colour">Headline Text Colour</label>
+							<input type="text" name="appearance[heading][color]" id="heading_colour" class="has_colourpicker" value="{{ appearance.heading.color }}">
+						</div>
+						
+						<div class="wpmarketing_clear" data-field="background"></div>
+						
+						<div class="field half_field" data-field="background">
 							<label for="background">Background</label>
 							<input type="text" name="appearance[background]" id="background" class="has_colourpicker" value="{{ appearance.background }}">
 						</div>
@@ -218,21 +301,9 @@
 							<input type="text" name="appearance[paragraph][color]" id="paragraph_colour" value="{{ appearance.paragraph.color }}" class="has_colourpicker">
 						</div>
 					
-						<div class="wpmarketing_clear" data-field="text_background"></div>
+						<div class="wpmarketing_clear" data-field="subheading_background"></div>
 					
-						<div class="field half_field" data-field="text_background">
-							<label for="heading_background">Headline Background</label>
-							<input type="text" name="appearance[heading][background]" id="heading_background" class="has_colourpicker" value="{{ appearance.heading.background }}">
-						</div>
-
-						<div class="field half_field">
-							<label for="heading_colour">Headline Text Colour</label>
-							<input type="text" name="appearance[heading][color]" id="heading_colour" class="has_colourpicker" value="{{ appearance.heading.color }}">
-						</div>
-					
-						<div class="wpmarketing_clear" data-field="text_background"></div>
-					
-						<div class="field half_field" data-field="text_background">
+						<div class="field half_field" data-field="subheading_background">
 							<label for="subheading_background">Subheadline Background</label>
 							<input type="text" name="appearance[subheading][background]" id="subheading_background" class="has_colourpicker" value="{{ appearance.subheading.background }}">
 						</div>
@@ -260,6 +331,11 @@
 							<label for="font">Font Family</label>
 							<input type="text" name="appearance[font]" id="font" value="{{ appearance.font }}">
 						</div>
+						
+						<div class="field half_field">
+							<label for="font">Width</label>
+							<input type="text" name="appearance[width]" id="width" value="{{ appearance.width }}">
+						</div>
 					
 					</div>
 					
@@ -271,7 +347,7 @@
 					</div>
 				</div>
 				
-				<div class="cta_tab cta_tab_integrations">
+				<div class="cta_tab cta_tab_integrations" data-field="button">
 					<div class="sync" data-field="sync">
 						
 						<p>There are a services that WPMarketing can connect with:</p>
@@ -296,7 +372,7 @@
 										<select name="sync[mailchimp][list_id]" class="mailchimp_list_id" id="mailchimp_list_id" data-list-id="{{ sync.mailchimp.list_id }}">
 											<option value="">None</option>
 											{{#each sync.mailchimp.lists}}
-												<option value="{{ id }}" {{#is id sync.mailchimp.list_id}}selected="selected"{{/is}}>{{ name }}</option>
+												<option value="{{ id }}" {{#is id ../sync.mailchimp.list_id}}selected="selected"{{/is}}>{{ name }}</option>
 											{{/each}}
 										</select>
 									</div>
@@ -328,7 +404,7 @@
 					</div>
 				</div>
 				
-				<div class="cta_tab cta_tab_actions">
+				<div class="cta_tab cta_tab_actions" data-field="button">
 					<div class="field half_field">
 						<label for="text_response">What is the on-page thank you message?</label>
 						<textarea name="text_response" id="text_response" style="height: 5em; width: 90%; ">{{ text_response }}</textarea>
@@ -634,7 +710,7 @@
 			
 			<div class="contents">
 				
-				<a href="#!/unlock" class="not_for_locked">Change My Unlock Code</a><br>
+				<!-- <a href="#!/unlock" class="not_for_locked">Change My Unlock Code</a><br> -->
 				
 				<div class="field">
 					<label for="mailchimp_api_key">What is your Mailchimp API Key?</p>

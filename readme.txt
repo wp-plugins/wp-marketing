@@ -1,11 +1,11 @@
 === WP Marketing ===
-Version: 1.0.6
+Version: 1.0.7
 URI: http://wpmarketing.guru
 Contributors: dallas22ca
 Author: Dallas Read
 Author URI: http://www.DallasRead.com
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=NX9NZCDNRD3CC
-Tags: marketing, customer support, customer service, conversions, Call-To-Action, cta, hello bar, mailchimp, aweber, getresponse, subscribe, subscription, newsletter
+Tags: marketing, customer support, customer service, conversions, Call-To-Action, cta, hello bar, mailchimp, aweber, getresponse, subscribe, subscription, newsletter, sumo me, sumome
 Requires at least: 3.6
 Tested up to: 4.1
 Stable tag: trunk
@@ -79,17 +79,26 @@ Here are the next things on the list for WP Marketing:
 
 * Form Submit Validations
 * Visitor location
-* Auto responders
 * Overview page with graphs (eg. times CTA is shown vs. interacted)
-* Poll for responses
+* Poll for responses in the back end
 * Mobile formatted WP Admin
-* Preview button
 * UI Effects
 * CTAs: Social Shares, Free Download, Call Me Back Button, Appointment Booker, Poll, Comment Stream, Survey, Live Chat, Euro Cookie Notice, Cobrowsing
 * Extended JS/PHP API for tracking custom events
 * Translations / Internationalization
 
 == Upgrade Notice ==
+
+= 1.0.7 =
+- Bug fix: Mailchimp lists was not saving correctly.
+- Dialog CTA always appears on top of the others (if present).
+- Dialog CTA has a customizable width that remains responsive.
+- Right/Left Boxes only minimize themselves when the close button is clicked.
+- Right/Left Boxes based on scrolled height work more smoothly.
+- Top/Bottom Bars use the Headline Background instead of the main background (makes for better defaults).
+- Shortcode added [cta id=1].
+- Quick option in the settings to disable a CTA instead of deleting it.
+- Fix an issue with "Show until visitor interacts."
 
 = 1.0.6 =
 - Add labels to checkboxes.
@@ -119,6 +128,17 @@ Here are the next things on the list for WP Marketing:
 * Initial public release!
 
 == Changelog ==
+
+= 1.0.7 =
+- Bug fix: Mailchimp lists was not saving correctly.
+- Dialog CTA always appears on top of the others (if present).
+- Dialog CTA has a customizable width that remains responsive.
+- Right/Left Boxes only minimize themselves when the close button is clicked.
+- Right/Left Boxes based on scrolled height work more smoothly.
+- Top/Bottom Bars use the Headline Background instead of the main background (makes for better defaults).
+- Shortcode added [cta id=1].
+- Quick option in the settings to disable a CTA instead of deleting it.
+- Fix an issue with "Show until visitor interacts."
 
 = 1.0.6 =
 - Add labels to checkboxes.

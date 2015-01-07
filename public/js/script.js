@@ -33,12 +33,16 @@
         _results = [];
         for (_i = 0, _len = ctas.length; _i < _len; _i++) {
           cta = ctas[_i];
-          cta.data.loader = WPMW.loader;
-          cta.data.id = cta.id;
-          if (cta.data.style === "inline" && (typeof cta.data.container === "undefined" || cta.data.container === "")) {
-            cta.data.container = ".wpm_container_" + cta.data.cache_key;
+          if (!cta.data.disabled) {
+            cta.data.loader = WPMW.loader;
+            cta.data.id = cta.id;
+            if (cta.data.style === "inline" && (typeof cta.data.container === "undefined" || cta.data.container === "")) {
+              cta.data.container = ".wpm_container_" + cta.data.cache_key;
+            }
+            _results.push(CTA.push(["widget", cta.data]));
+          } else {
+            _results.push(void 0);
           }
-          _results.push(CTA.push(["widget", cta.data]));
         }
         return _results;
       });

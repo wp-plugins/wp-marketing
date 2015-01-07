@@ -80,13 +80,13 @@
   margin-bottom: 30px; }
 .wpmarketing .button.orange, .wpmarketing .button.orange:hover {
   background: #E38B28;
-  background: -moz-linear-gradient(top, #e38b28 0%, #f47721 100%);
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #e38b28), color-stop(100%, #f47721));
-  background: -webkit-linear-gradient(top, #e38b28 0%, #f47721 100%);
-  background: -o-linear-gradient(top, #e38b28 0%, #f47721 100%);
-  background: -ms-linear-gradient(top, #e38b28 0%, #f47721 100%);
-  background: linear-gradient(to bottom, #e38b28 0%, #f47721 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#E38B28', endColorstr='#f47721',GradientType=0 );
+  background: -moz-linear-gradient(top, #E38B28 0%, #f47721 100%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #E38B28), color-stop(100%, #f47721));
+  background: -webkit-linear-gradient(top, #E38B28 0%, #f47721 100%);
+  background: -o-linear-gradient(top, #E38B28 0%, #f47721 100%);
+  background: -ms-linear-gradient(top, #E38B28 0%, #f47721 100%);
+  background: linear-gradient(to bottom, #E38B28 0%, #f47721 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#E38B28', endColorstr='#f47721',GradientType=0 );
   border-color: #E18C1E;
   box-shadow: inset 1px 1px 1px rgba(255, 255, 255, 0.3);
   text-shadow: 1px 1px 2px #E18C1E; }
@@ -98,7 +98,7 @@
   background: -o-linear-gradient(top, #6acc6d 0%, #62bc68 100%);
   background: -ms-linear-gradient(top, #6acc6d 0%, #62bc68 100%);
   background: linear-gradient(to bottom, #6acc6d 0%, #62bc68 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#6acc6d', endColorstr='#62bc68',GradientType=0 );
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#6acc6d', endColorstr='#62bc68',GradientType=0 );
   border-color: #2E9033;
   box-shadow: inset 1px 1px 1px rgba(255, 255, 255, 0.3);
   text-shadow: 1px 1px 2px #2E9033; }
@@ -110,7 +110,7 @@
   background: -o-linear-gradient(top, #d32a2a 1%, #a52121 100%);
   background: -ms-linear-gradient(top, #d32a2a 1%, #a52121 100%);
   background: linear-gradient(to bottom, #d32a2a 1%, #a52121 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#d32a2a', endColorstr='#a52121',GradientType=0 );
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#d32a2a', endColorstr='#a52121',GradientType=0 );
   border-color: #871A1A;
   box-shadow: inset 1px 1px 1px rgba(255, 255, 255, 0.3);
   text-shadow: 1px 1px 2px #871A1A; }
@@ -358,6 +358,15 @@
   display: none; }
   .wpmarketing .cta_tab.selected {
     display: block; }
+.wpmarketing #description {
+  height: 100px; }
+.wpmarketing .cta_shortcode {
+  float: right;
+  color: #777;
+  margin-right: 15px;
+  font-size: 15px;
+  line-height: 15px;
+  margin: 0; }
 
 .wpmarketing .sync .mailchimp.is_loading .loading {
   display: block; }
@@ -378,3 +387,5 @@
   display: none; }
 .wpmarketing[data-ctas-length="1"].locked .not_for_locked_over_one_cta {
   display: none; }
+
+/*# sourceMappingURL=style.css.map */

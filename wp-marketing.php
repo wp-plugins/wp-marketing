@@ -4,12 +4,12 @@
 Plugin Name: WP Marketing
 Plugin URI: http://WPMarketing.guru
 Description: WP Marketing is a suite of high-converting tools that help you to engage your visitors, personalize customer connections, and boost your profits.
-Version: 1.0.6
+Version: 1.0.7
 Contributors: dallas22ca
 Author: Dallas Read
 Author URI: http://www.DallasRead.com
 Text Domain: wp-marketing
-marketing, customer support, customer service, conversions, Call-To-Action, cta, hello bar, mailchimp, aweber, getresponse, subscribe, subscription, newsletter
+Tags: marketing, customer support, customer service, conversions, Call-To-Action, cta, hello bar, mailchimp, aweber, getresponse, subscribe, subscription, newsletter, sumo me, sumome
 Requires at least: 3.6
 Tested up to: 4.1
 Stable tag: trunk
@@ -17,26 +17,6 @@ License: MIT
 
 Copyright (c) 2014 Dallas Read.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
-*/
-
-/*
 ini_set("display_errors",1);
 ini_set("display_startup_errors",1);
 error_reporting(-1);
@@ -44,7 +24,7 @@ error_reporting(-1);
 
 class WPMarketing {
   public static $wpmarketing_instance;
-	const version = "1.0.2";
+	const version = "1.0.7";
 	const db = 1.0;
 	const debug = false;
 
@@ -84,6 +64,7 @@ class WPMarketing {
 		add_action( "wp_ajax_nopriv_cta_count_responses", array( $this, "cta_count_responses" ) );
 		
 		add_shortcode("response_counter", array( $this, "shortcode_response_counter" ) );
+		add_shortcode("cta", array( $this, "shortcode_cta" ) );
 		
 		register_activation_hook( __FILE__, array( $this, "db_check" ) );
     register_uninstall_hook( __FILE__, array( $this, "uninstall" ) );
@@ -240,7 +221,8 @@ class WPMarketing {
 	      "unlock_code" => "",
 	      "subscriber_name" => "",
 	      "subscriber_email" => "",
-				"trial_end_at" => 0
+				"trial_end_at" => 0,
+				"status" => "unlocked"
 	    );
 			
 			if (!empty($update) || $wpmarketing != $settings) {
@@ -446,9 +428,9 @@ class WPMarketing {
 		
 		if ($cta_data["data"]["triggers"][0]["expire"] == "0") {
 			$visitor = $wpdb->get_row("SELECT * FROM $visitors_table WHERE user_id = $current_user_id LIMIT 1", ARRAY_A);
-			$results = $wpdb->get_var("SELECT COUNT(*) FROM $events_table WHERE visitor_id = $visitor[id] AND cta_id = $submit[cta_id]", ARRAY_A);
+			$results = $wpdb->get_var("SELECT COUNT(*) FROM $events_table WHERE visitor_id = $visitor[id] AND cta_id = $submit[cta_id]");
 
-			if ($wpdb->num_rows > 0) {
+			if ($results > 0) {
 				$submittable = false;
 			}
 		}
@@ -513,7 +495,7 @@ class WPMarketing {
 						update_user_meta( $current_user_id, "cta_submitted_$submit[cta_id]", true );
 					}
 				
-					if (isset($email)) { //&& $wpmarketing["status"] == "unlocked"
+					if (1 == 1) { //&& $wpmarketing["status"] == "unlocked"
 						$submit["sync"] = array();
 						$has_mailchimp = isset($submit["cta"]["data"]["sync"]["mailchimp"]["list_id"]);
 						$has_zendesk = isset($submit["cta"]["data"]["sync"]["zendesk"]["sync"]);
@@ -571,7 +553,12 @@ class WPMarketing {
 		{
       if ($field != "action" && $field != "Action")
       {
-        $value = filter_var($value, FILTER_SANITIZE_STRING);
+				if (is_array($value)) {
+					$value = "<ul><li>" . implode("</li><li>", $value) . "</li></ul>";
+				} else {
+					$value = filter_var($value, FILTER_SANITIZE_STRING);
+				}
+
   			$visitor["data"] .= "
           <tr>
             <td style=\"text-align:right; \">
@@ -860,6 +847,28 @@ class WPMarketing {
 	public static function shortcode_response_counter( $attrs ) {
 		return "<span class=\"cta_counter\" data-id=\"$attrs[id]\">0</span>";
 	}
+	
+	public static function shortcode_cta( $attrs ) {
+		return WPMarketing::generate_cta_container( $attrs["id"] );
+	}
+	
+	public static function generate_cta_container( $id ) {
+		global $wpdb;
+		$ctas_table = $wpdb->prefix . "wpmarketing_ctas";
+		$cta = $wpdb->get_row("SELECT * FROM $ctas_table WHERE id = $id LIMIT 1", ARRAY_A);
+		$container = "";
+		
+		if ($cta != null) {
+			$cta = stripslashes_deep(json_decode(stripslashes_deep($cta["data"]))->data);
+			$cache_key = $cta->cache_key;
+			
+			if ($cta->style == "inline" && !property_exists($cta, "disabled")) {
+				$container = "<div class=\"wpm_container_$cache_key\"></div>";
+			}
+		}
+		
+		return $container;
+	}
 }
 
 class WPMWidget extends WP_Widget {
@@ -868,18 +877,7 @@ class WPMWidget extends WP_Widget {
 	}
 
 	function widget( $args, $instance ) {
-		global $wpdb;
-		$ctas_table = $wpdb->prefix . "wpmarketing_ctas";
-		$cta = $wpdb->get_row("SELECT * FROM $ctas_table WHERE id = $instance[cta_id] LIMIT 1", ARRAY_A);
-		
-		if ($cta != null) {
-			$cta = stripslashes_deep(json_decode(stripslashes_deep($cta["data"]))->data);
-			$cache_key = $cta->cache_key;
-			
-			if ($cta->style == "inline") {
-				echo "<div class=\"wpm_container_$cache_key\"></div>";
-			}
-		}
+		echo WPMarketing::generate_cta_container( $instance["cta_id"] );
 	}
 
 	function update( $new_instance, $old_instance ) {
@@ -898,7 +896,7 @@ class WPMWidget extends WP_Widget {
 		foreach ($ctas as $key => $cta) {
 			$cta["data"] = stripslashes_deep(json_decode(stripslashes_deep($cta["data"]))->data);
 			
-			if ($cta["data"]->style == "inline") {
+			if ($cta["data"]->style == "inline" && !property_exists($cta["data"], "disabled")) {
 				$selected = "";
 				if ((integer) $instance["cta_id"] == (integer) $cta["id"]) { $selected = "selected=\"selected\""; }
 				$cta_options .= "<option value=\"" . $cta["id"] . "\" " . $selected . ">" . $cta["name"] . "</option>";

@@ -186,6 +186,7 @@
           cta.text_response || (cta.text_response = "Thank you for your response.");
           cta.appearance || (cta.appearance = {
             background: "#eeeeee",
+            width: "325px",
             heading: {
               background: "#006298",
               color: "#ffffff"
@@ -258,52 +259,51 @@
 
   WPMW.ctaFields = {
     contact: {
-      bar: ["button", "title", "fields", "redirect", "closable", "sync", "sticky"],
-      box: ["button", "title", "fields", "redirect", "closable", "text_background", "description", "sync"],
-      dialog: ["button", "title", "fields", "redirect", "closable", "text_background", "description", "sync", "escapable", "clickable"],
-      inline: ["button", "title", "fields", "redirect", "description", "sync", "container"]
+      bar: ["button", "title", "fields", "redirect", "closable", "heading_background", "sync", "sticky"],
+      box: ["button", "title", "fields", "redirect", "background", "closable", "heading_background", "subheading_background", "description", "sync"],
+      dialog: ["button", "title", "fields", "redirect", "background", "closable", "heading_background", "subheading_background", "description", "sync", "escapable", "clickable", "width"],
+      inline: ["button", "title", "fields", "redirect", "background", "description", "sync", "container"]
     },
     subscription: {
-      bar: ["button", "title", "fields", "redirect", "closable", "sync", "sticky"],
-      box: ["button", "title", "fields", "redirect", "closable", "text_background", "description", "sync"],
-      dialog: ["button", "title", "fields", "redirect", "closable", "text_background", "description", "sync", "escapable", "clickable"],
-      inline: ["button", "title", "fields", "redirect", "description", "sync", "container"]
+      bar: ["button", "title", "fields", "redirect", "closable", "heading_background", "sync", "sticky"],
+      box: ["button", "title", "fields", "redirect", "background", "closable", "heading_background", "subheading_background", "description", "sync"],
+      dialog: ["button", "title", "fields", "redirect", "background", "closable", "heading_background", "subheading_background", "description", "sync", "escapable", "clickable", "width"],
+      inline: ["button", "title", "fields", "redirect", "background", "description", "sync", "container"]
     },
     callback: {
-      bar: ["button", "title", "fields", "redirect", "closable", "sync", "sticky"],
-      box: ["button", "title", "fields", "redirect", "closable", "text_background", "description", "sync"],
-      dialog: ["button", "title", "fields", "redirect", "closable", "text_background", "description", "sync", "escapable", "clickable"],
-      inline: ["button", "title", "fields", "redirect", "description", "sync", "container"]
+      bar: ["button", "title", "fields", "redirect", "closable", "heading_background", "sync", "sticky"],
+      box: ["button", "title", "fields", "redirect", "background", "closable", "heading_background", "subheading_background", "description", "sync"],
+      dialog: ["button", "title", "fields", "redirect", "background", "closable", "heading_background", "subheading_background", "description", "sync", "escapable", "clickable", "width"],
+      inline: ["button", "title", "fields", "redirect", "background", "description", "sync", "container"]
     },
     download: {
-      bar: ["button", "title", "fields", "download", "closable", "sync", "sticky"],
-      box: ["button", "title", "fields", "download", "closable", "text_background", "description", "sync"],
-      dialog: ["button", "title", "fields", "download", "closable", "text_background", "description", "sync", "escapable", "clickable"],
-      inline: ["button", "title", "fields", "download", "description", "sync", "container"]
+      bar: ["button", "title", "fields", "download", "closable", "heading_background", "sync", "sticky"],
+      box: ["button", "title", "fields", "download", "background", "closable", "heading_background", "subheading_background", "description", "sync"],
+      dialog: ["button", "title", "fields", "download", "background", "closable", "heading_background", "subheading_background", "description", "sync", "escapable", "clickable", "width"],
+      inline: ["button", "title", "fields", "download", "background", "description", "sync", "container"]
     },
     petition: {
-      bar: ["button", "title", "fields", "redirect", "closable", "sync", "sticky"],
-      box: ["button", "title", "fields", "redirect", "closable", "text_background", "description", "sync"],
-      dialog: ["button", "title", "fields", "redirect", "closable", "text_background", "description", "sync", "escapable", "clickable"],
-      inline: ["button", "title", "fields", "redirect", "description", "sync", "container"]
+      bar: ["button", "title", "fields", "redirect", "closable", "heading_background", "sync", "sticky"],
+      box: ["button", "title", "fields", "redirect", "background", "closable", "heading_background", "subheading_background", "description", "sync"],
+      dialog: ["button", "title", "fields", "redirect", "background", "closable", "heading_background", "subheading_background", "description", "sync", "escapable", "clickable", "width"],
+      inline: ["button", "title", "fields", "redirect", "background", "description", "sync", "container"]
     },
     appointment: {
-      bar: ["button", "title", "fields", "redirect", "closable", "sync", "sticky"],
-      box: ["button", "title", "fields", "redirect", "closable", "text_background", "description", "sync"],
-      dialog: ["button", "title", "fields", "redirect", "closable", "text_background", "description", "sync", "escapable", "clickable"],
-      inline: ["button", "title", "fields", "redirect", "description", "sync", "container"]
+      bar: ["button", "title", "fields", "redirect", "closable", "heading_background", "sync", "sticky"],
+      box: ["button", "title", "fields", "redirect", "background", "closable", "heading_background", "subheading_background", "description", "sync"],
+      dialog: ["button", "title", "fields", "redirect", "background", "closable", "heading_background", "subheading_background", "description", "sync", "escapable", "clickable", "width"],
+      inline: ["button", "title", "fields", "redirect", "background", "description", "sync", "container"]
     },
     button: {
-      bar: ["button", "title", "redirect", "closable", "sticky"],
-      box: ["button", "title", "redirect", "closable", "text_background", "description"],
-      dialog: ["button", "title", "redirect", "closable", "text_background", "description", "escapable", "clickable"],
-      inline: ["button", "title", "redirect", "description", "container"]
+      bar: ["button", "title", "redirect", "closable", "heading_background", "sticky"],
+      box: ["button", "title", "redirect", "closable", "background", "heading_background", "subheading_background", "description"],
+      dialog: ["button", "title", "redirect", "closable", "background", "heading_background", "subheading_background", "description", "escapable", "clickable", "width"],
+      inline: ["button", "title", "redirect", "description", "background", "container"]
     },
     social: {
-      bar: ["button", "title", "fields", "closable", "redirect", "social", "sticky"],
-      box: ["button", "title", "fields", "closable", "redirect", "text_background", "description", "social"],
-      dialog: ["button", "title", "fields", "closable", "redirect", "text_background", "description", "social", "escapable"],
-      inline: ["button", "title", "fields", "redirect", "description", "social", "container"]
+      inline: ["title", "description", "social"],
+      box: ["title", "description", "social"],
+      midbox: ["social"]
     }
   };
 
@@ -505,20 +505,16 @@
       }
       return WPMW.setStyles();
     });
-    $(document).on("click", ".cta_styles [data-style]", function() {
-      var style;
+    $(document).on("click", ".cta_styles li", function() {
+      var form, position, style;
+      form = $(this).closest("form");
       style = $(this).attr("data-style");
-      $(".cta_styles li").removeClass("selected");
-      $(this).addClass("selected");
-      $("#cta_form").find("input[name='style']").val(style);
-      return WPMW.setStyles();
-    });
-    $(document).on("click", ".cta_styles [data-position]", function() {
-      var position;
       position = $(this).attr("data-position");
       $(".cta_styles li").removeClass("selected");
-      $(".cta_styles li[data-position='" + position + "']").addClass("selected");
-      return $(this).closest("form").find("[name='position']").val(position);
+      $(this).addClass("selected");
+      form.find("input[name='style']").val(style);
+      form.find("[name='position']").val(position);
+      return WPMW.setStyles();
     });
     $(document).on("keyup", "#cta_form input[name='name']", function() {
       return $(".cta_" + WPMW.current_id).find("[data-name]").text($(this).val());

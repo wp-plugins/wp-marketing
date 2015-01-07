@@ -1,9 +1,11 @@
 <div class="wpmarketing_header">
 	<?php if ($wpmarketing["activated"]) { ?>
 		<div class="top_right_nav">
-			<a href="#!/settings">Settings</a>
-			<span class="not_for_unlocked"> &nbsp; | &nbsp; <a href="#!/unlock">Unlock WPMarketing</a></span>
-			<span class="not_for_locked"> &nbsp; | &nbsp; <a href="?page=wpmarketing<?php echo (isset($_GET["nowp"]) ? "" : "&nowp"); ?>"><?php echo (isset($_GET["nowp"]) ? "Exit" : "Start"); ?> Full Screen</a></span>
+			<a href="#!/ctas">Welcome</a> &nbsp; | &nbsp; 
+			<a href="#!/settings">Settings</a> &nbsp; | &nbsp; 
+			<a href="?page=wpmarketing<?php echo (isset($_GET["nowp"]) ? "" : "&nowp"); ?>"><?php echo (isset($_GET["nowp"]) ? "Exit" : "Start"); ?> Full Screen</a>
+			<!-- <span class="not_for_unlocked"> &nbsp; | &nbsp; <a href="#!/unlock">Unlock WPMarketing</a></span>
+			<span class="not_for_locked"> &nbsp; | &nbsp; <a href="?page=wpmarketing<?php echo (isset($_GET["nowp"]) ? "" : "&nowp"); ?>"><?php echo (isset($_GET["nowp"]) ? "Exit" : "Start"); ?> Full Screen</a></span> -->
 		</div>
 	<?php } ?>
 	
