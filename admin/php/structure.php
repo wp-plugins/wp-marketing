@@ -87,7 +87,7 @@
 						<option value="button" 				{{#is action "button"}}selected="selected"{{/is}} 							>Button Link</option>
 						<option value="download" 			{{#is action "download"}}selected="selected"{{/is}} 						>Free Download</option>
 						<option value="petition" 			{{#is action "petition"}}selected="selected"{{/is}} 						>Petition</option>
-						<option value="social" 				{{#is action "social"}}selected="selected"{{/is}} 							>Social Shares</option>
+						<option value="social" 				{{#is action "social"}}selected="selected"{{/is}} 			disabled>Social Shares</option>
 						<option value="callback" 			{{#is action "callback"}}selected="selected"{{/is}}			disabled>Call Me Back Button</option>
 						<option value="appointment" 	{{#is action "appointment"}}selected="selected"{{/is}}	disabled>Appointment Booker</option>
 						<option value="other" 				{{#is action "other"}}selected="selected"{{/is}} 				disabled>Poll</option>

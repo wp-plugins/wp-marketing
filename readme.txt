@@ -1,11 +1,11 @@
 === WP Marketing ===
-Version: 1.0.7
+Version: 1.0.8
 URI: http://wpmarketing.guru
 Contributors: dallas22ca
 Author: Dallas Read
 Author URI: http://www.DallasRead.com
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=NX9NZCDNRD3CC
-Tags: marketing, customer support, customer service, conversions, Call-To-Action, cta, hello bar, mailchimp, aweber, getresponse, subscribe, subscription, newsletter, sumo me, sumome
+Tags: marketing, customer support, customer service, conversions, Call-To-Action, cta, hello bar, mailchimp, aweber, getresponse, subscribe, subscription, newsletter, sumo me, sumome, wp marketing
 Requires at least: 3.6
 Tested up to: 4.1
 Stable tag: trunk
@@ -89,6 +89,9 @@ Here are the next things on the list for WP Marketing:
 
 == Upgrade Notice ==
 
+= 1.0.8 =
+- Fixed a small issue where the settings tabs weren't displaying correctly.
+
 = 1.0.7 =
 - Bug fix: Mailchimp lists was not saving correctly.
 - Dialog CTA always appears on top of the others (if present).
@@ -128,6 +131,9 @@ Here are the next things on the list for WP Marketing:
 * Initial public release!
 
 == Changelog ==
+
+= 1.0.8 =
+- Fixed a small issue where the settings tabs weren't displaying correctly.
 
 = 1.0.7 =
 - Bug fix: Mailchimp lists was not saving correctly.

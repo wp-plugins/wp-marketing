@@ -4,12 +4,12 @@
 Plugin Name: WP Marketing
 Plugin URI: http://WPMarketing.guru
 Description: WP Marketing is a suite of high-converting tools that help you to engage your visitors, personalize customer connections, and boost your profits.
-Version: 1.0.7
+Version: 1.0.8
 Contributors: dallas22ca
 Author: Dallas Read
 Author URI: http://www.DallasRead.com
 Text Domain: wp-marketing
-Tags: marketing, customer support, customer service, conversions, Call-To-Action, cta, hello bar, mailchimp, aweber, getresponse, subscribe, subscription, newsletter, sumo me, sumome
+Tags: marketing, customer support, customer service, conversions, Call-To-Action, cta, hello bar, mailchimp, aweber, getresponse, subscribe, subscription, newsletter, sumo me, sumome, wp marketing
 Requires at least: 3.6
 Tested up to: 4.1
 Stable tag: trunk
@@ -24,7 +24,7 @@ error_reporting(-1);
 
 class WPMarketing {
   public static $wpmarketing_instance;
-	const version = "1.0.7";
+	const version = "1.0.8";
 	const db = 1.0;
 	const debug = false;
 

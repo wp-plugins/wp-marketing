@@ -343,16 +343,16 @@
       _ref = Object.keys(action);
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         style = _ref[_i];
-        form.find("[data-style='" + style + "']").show();
+        form.find("[data-style='" + style + "']:not(.cta_tab)").show();
       }
       _ref1 = action[current_style];
       for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
         field = _ref1[_j];
-        form.find("[data-field='" + field + "']").show();
+        form.find("[data-field='" + field + "']:not(.cta_tab)").show();
       }
       return setTimeout(function() {
         if (!$(".cta_styles li.selected:visible").length) {
-          form.find(".cta_styles li:visible:first").trigger("click");
+          form.find(".cta_styles li:visible:last").trigger("click");
         }
         return WPMW.setName();
       }, 100);
